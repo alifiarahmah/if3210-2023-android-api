@@ -1,36 +1,42 @@
 package com.example.majika
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.majika.daftarmenu.MenuAdapter
-import com.example.majika.data.MenuItem
-import com.example.majika.data.MenuType
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.example.majika.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //set binding
+
         binding = ActivityMainBinding.inflate(layoutInflater)
-        //set view
-        val view = binding.root
-        setContentView(view)
+        setContentView(binding.root)
 
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerListMenu)
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        val navView: BottomNavigationView = binding.navView
 
-        val list = ArrayList<MenuItem>()
-        list.add(MenuItem("Nasi Goreng","-","MYR",100,20,MenuType.FOOD))
-        list.add(MenuItem("Nasi Lemak","-","MYR",100,20,MenuType.FOOD))
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment_activity_cart) as NavHostFragment
 
-        val adapter = MenuAdapter(list)
-        adapter.notifyDataSetChanged()
+        val navController = navHostFragment.navController
 
-        recyclerView.adapter = adapter
+        //  val navController = findNavController(R.id.nav_host_fragment_activity_Main)
+
+
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.navigation_camera, R.id.navigation_branch, R.id.navigation_menu, R.id.navigation_cart
+            )
+        )
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
     }
 }
