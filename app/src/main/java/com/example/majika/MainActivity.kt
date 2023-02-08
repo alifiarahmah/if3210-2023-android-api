@@ -7,12 +7,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.majika.daftarmenu.MenuAdapter
 import com.example.majika.data.MenuItem
 import com.example.majika.data.MenuType
+import com.example.majika.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        //set binding
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        //set view
+        val view = binding.root
+        setContentView(view)
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerListMenu)
         recyclerView.setHasFixedSize(true)
