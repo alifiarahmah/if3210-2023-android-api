@@ -7,6 +7,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.majika.daftarmenu.MenuAdapter
+import com.example.majika.data.MenuItem
+import com.example.majika.data.MenuType
 import com.example.majika.databinding.FragmentMenuBinding
 
 class MenuFragment : Fragment() {
@@ -26,12 +30,28 @@ class MenuFragment : Fragment() {
             ViewModelProvider(this).get(MenuViewModel::class.java)
 
         _binding = FragmentMenuBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        val root:View = binding.root
+        val recyclerView = binding.recyclerListMenu
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = LinearLayoutManager(activity)
 
-        val textView: TextView = binding.textMenu
-        menuViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
+        val list = ArrayList<MenuItem>()
+        list.add(MenuItem("Nasi Goreng","-","MYR",100,20, MenuType.FOOD))
+        list.add(MenuItem("Nasi Lemak","-","MYR",100,20,MenuType.FOOD))
+        list.add(MenuItem("Nasi Bakar","-","MYR",100,20, MenuType.FOOD))
+        list.add(MenuItem("Susu Panas!","-","MYR",100,20,MenuType.DRINK))
+
+        val adapter = MenuAdapter(list)
+      //  adapter.notifyDataSetChanged()
+
+        recyclerView.adapter = adapter
+
+
+
+//        val textView: TextView = binding.textMenu
+//        menuViewModel.text.observe(viewLifecycleOwner) {
+//            textView.text = it
+//        }
         return root
     }
 
