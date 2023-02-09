@@ -36,8 +36,8 @@ class MenuFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
         val list = ArrayList<MenuItem>()
-        list.add(MenuItem("Nasi Goreng","-","MYR",100,20, MenuType.FOOD))
-        list.add(MenuItem("Nasi Lemak","-","MYR",100,20,MenuType.FOOD))
+        list.add(MenuItem("Nasi Goreng","-","IDR",100,20, MenuType.FOOD))
+        list.add(MenuItem("Nasi Lemak","Kebenaran tak peranh sok sendiri","IDR",100,20,MenuType.FOOD))
         list.add(MenuItem("Nasi Bakar","-","MYR",100,20, MenuType.FOOD))
         list.add(MenuItem("Susu Panas!","-","MYR",100,20,MenuType.DRINK))
 

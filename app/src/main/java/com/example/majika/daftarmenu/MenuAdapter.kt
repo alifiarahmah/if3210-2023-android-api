@@ -12,8 +12,14 @@ class MenuAdapter(private val list:ArrayList<MenuItem>): RecyclerView.Adapter<Me
 {
     class Holder(val view: View): RecyclerView.ViewHolder(view){
         val textView:TextView
+        val priceView:TextView
+        val soldView:TextView
+        val descView:TextView
         init {
-            textView = view.findViewById(R.id.asu)
+            textView = view.findViewById(R.id.title)
+            priceView = view.findViewById(R.id.price)
+            soldView = view.findViewById(R.id.sold_number)
+            descView = view.findViewById(R.id.description)
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -24,7 +30,18 @@ class MenuAdapter(private val list:ArrayList<MenuItem>): RecyclerView.Adapter<Me
 
     override fun onBindViewHolder(holder: MenuAdapter.Holder, position: Int) {
         //saat ngebind data
-        holder.textView.text = list[position].name
+        val data = list[position]
+        holder.textView.text = data.name
+        holder.priceView.text =  when(data.currency){
+            "IDR"->{
+                "Rp." + data.price.toString()
+            }
+            else->{
+                "Rp.0"
+            }
+        }
+        holder.soldView.text = data.sold.toString() + " Terjual"
+        holder.descView.text = data.description
     }
 
     override fun getItemCount(): Int = list.size
