@@ -1,7 +1,6 @@
 package com.example.majika.daftarmenu
 
 import android.graphics.Color
-import android.provider.CalendarContract.Colors
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,7 @@ import com.example.majika.data.MenuItem
 
 class MenuAdapter(private val list:ArrayList<MenuItem>): RecyclerView.Adapter<MenuAdapter.Holder>()
 {
-    class Holder(val view: View): RecyclerView.ViewHolder(view){
+    class Holder( view: View): RecyclerView.ViewHolder(view){
         val textView:TextView
         val priceView:TextView
         val soldView:TextView
@@ -37,7 +36,7 @@ class MenuAdapter(private val list:ArrayList<MenuItem>): RecyclerView.Adapter<Me
         return Holder(view)
     }
 
-    override fun onBindViewHolder(holder: MenuAdapter.Holder, position: Int) {
+    override fun onBindViewHolder(holder: Holder, position: Int) {
         //saat ngebind data
         val data = list[position]
         holder.textView.text = data.name
