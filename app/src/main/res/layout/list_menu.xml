@@ -79,7 +79,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.3"
-                        android:text="-" />
+                        android:text="-"
+                        android:textColor="#901C18" />
 
                     <TextView
                         android:id="@+id/totalOrder"
@@ -96,7 +97,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.3"
-                        android:text="+" />
+                        android:text="+"
+                        android:textColor="#901C18" />
 
                 </LinearLayout>
             </LinearLayout>
