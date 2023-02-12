@@ -1,11 +1,12 @@
 package com.example.majika.daftarmenu
 
+import com.example.majika.BuildConfig
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
 object MenuClient {
-    private val BASE_URL:String = "http://192.168.2.105:3000/" //localhost
+    private val BASE_URL:String = BuildConfig.BASE_URL //localhost
     private var mRetrofit: Retrofit? = null
 
     fun getInstance():Retrofit{
