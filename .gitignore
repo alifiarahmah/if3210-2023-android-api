@@ -4,7 +4,7 @@ build/
 app/build/
 
 # Local configuration file (sdk path, etc)
-local.properties.bak
+local.properties
 
 # Log/OS Files
 *.log

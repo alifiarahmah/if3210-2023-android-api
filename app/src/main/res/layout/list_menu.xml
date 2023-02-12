@@ -21,6 +21,7 @@
             app:contentPaddingTop="8dp"
             app:contentPaddingBottom="8dp"
             app:contentPaddingLeft="15dp"
+            app:contentPaddingRight="10dp"
             app:cardCornerRadius="20dp">
 
             <LinearLayout
@@ -32,7 +33,7 @@
                     android:id="@+id/descriptionLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight=".70"
+                    android:layout_weight=".60"
                     android:orientation="vertical">
 
                     <TextView
@@ -63,12 +64,34 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight=".30"
-                    android:orientation="horizontal">
+                    android:layout_weight=".40"
+                    android:orientation="horizontal"
+                    >
 
                     <Button
+                        android:id="@+id/decreaseOrderButton"
+                        android:minHeight="0dp"
+                        android:minWidth="0dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_weight="0.3"
+                        android:text="-" />
+
+                    <TextView
+                        android:id="@+id/totalOrder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:textAlignment="center"
+                        android:layout_weight="0.4" />
+
+                    <Button
+                        android:id="@+id/increaseOrderButton"
+                        android:minHeight="0dp"
+                        android:minWidth="0dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.3"
                         android:text="+" />
 
                 </LinearLayout>
