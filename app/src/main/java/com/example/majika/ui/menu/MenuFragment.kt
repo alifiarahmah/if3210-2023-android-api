@@ -49,6 +49,7 @@ class MenuFragment : Fragment() {
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
+
         //set api service
         API_service = MenuClient.getInstance().create(MenuAPI::class.java)
 //        val list = ArrayList<MenuItem>()
@@ -64,6 +65,11 @@ class MenuFragment : Fragment() {
 
         //fetch data
         fetchData()
+
+        //set search bar listener
+        binding.searchBar.setEndIconOnClickListener{
+            println(binding.searchBar.editText?.text.toString())
+        }
 
 
 //        val textView: TextView = binding.textMenu
