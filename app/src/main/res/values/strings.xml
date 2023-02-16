@@ -4,4 +4,7 @@
     <string name="title_branch">Cabang</string>
     <string name="title_menu">Menu</string>
     <string name="title_cart">Keranjang</string>
+    <string name="searchbar_hint">Masukkan nama menu...</string>
+    <string name="minus_sign">-</string>
+    <string name="plus_sign">+</string>
 </resources>

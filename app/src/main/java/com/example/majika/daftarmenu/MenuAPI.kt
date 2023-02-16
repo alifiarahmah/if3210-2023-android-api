@@ -7,4 +7,7 @@ import retrofit2.http.GET
 interface MenuAPI {
     @GET("/v1/menu")
     fun getMenu(): Call<MenuList>
+
+    @GET("/v1/menu/food")
+    fun getFood(): Call<MenuList>
 }

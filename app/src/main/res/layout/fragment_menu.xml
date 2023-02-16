@@ -13,12 +13,11 @@
         app:endIconMode="custom"
         app:endIconDrawable="@android:drawable/ic_menu_search"
         app:boxBackgroundColor="#F2F2F2"
-        android:layout_marginBottom="20dp"
         android:id="@+id/search_bar" >
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="Masukkan nama menu...">
+            android:hint="@string/searchbar_hint">
 
         </com.google.android.material.textfield.TextInputEditText>
 

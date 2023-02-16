@@ -79,7 +79,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.3"
-                        android:text="-"
+                        android:text="@string/minus_sign"
                         android:textColor="#901C18" />
 
                     <TextView
@@ -97,7 +97,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.3"
-                        android:text="+"
+                        android:text="@string/plus_sign"
                         android:textColor="#901C18" />
 
                 </LinearLayout>
