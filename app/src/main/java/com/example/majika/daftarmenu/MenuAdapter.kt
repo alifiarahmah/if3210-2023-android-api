@@ -16,6 +16,7 @@ import com.example.majika.R
 import com.example.majika.data.MenuItem
 import com.example.majika.data.MenuSection
 import com.example.majika.data.UIConstant
+import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Currency
 
@@ -88,7 +89,7 @@ class MenuAdapter(private var mContext: Context, private val list:ArrayList<Menu
                 //format pesanan
                 val order = 0
                 holder.soldView.text = buildString {
-                    append(item.sold.toString())
+                    append(NumberFormat.getNumberInstance().format(item.sold))
                     append(" Terjual")
                 }
                 holder.descView.text = item.description
