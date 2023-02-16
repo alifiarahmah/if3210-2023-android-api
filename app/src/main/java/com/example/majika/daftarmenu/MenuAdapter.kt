@@ -16,6 +16,8 @@ import com.example.majika.R
 import com.example.majika.data.MenuItem
 import com.example.majika.data.MenuSection
 import com.example.majika.data.UIConstant
+import java.text.NumberFormat
+import java.util.Currency
 
 class MenuAdapter(private var mContext: Context, private val list:ArrayList<MenuSection>): RecyclerView.Adapter<RecyclerView.ViewHolder>()
 {
@@ -78,14 +80,12 @@ class MenuAdapter(private var mContext: Context, private val list:ArrayList<Menu
                     return
                 }
                 holder.textView.text = item.name
-                holder.priceView.text =  when(item.currency){
-                    "IDR"->{
-                        "Rp." + item.price.toString()
-                    }
-                    else->{
-                        "Rp.0"
-                    }
-                }
+                //format harga
+                val price = NumberFormat.getCurrencyInstance()
+                price.maximumFractionDigits = 2
+                var price_text_pre = price.format(item.price)
+                holder.priceView.text = price_text_pre.replace("$","Rp.")
+                //format pesanan
                 val order = 0
                 holder.soldView.text = buildString {
                     append(item.sold.toString())
