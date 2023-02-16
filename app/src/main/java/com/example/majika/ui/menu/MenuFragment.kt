@@ -29,11 +29,12 @@ class MenuFragment : Fragment() {
 
     //api clinet
     private var API_service:MenuAPI? = null
-   // private var menuFood:ArrayList<MenuItem> = ArrayList()
+  //  private var menus:ArrayList<MenuItem> = ArrayList()
 
     private var adapter:MenuAdapter? = null
 
     private val foodParent = MenuSection(title="Makanan")
+    private val drinkParent = MenuSection(title="Minuman")
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,6 +61,7 @@ class MenuFragment : Fragment() {
         //list section
         val sections = ArrayList<MenuSection>()
         sections.add(foodParent)
+        sections.add(drinkParent)
         //set food menu
         adapter = MenuAdapter(container!!.context, sections)
       //  adapter.notifyDataSetChanged()
@@ -90,8 +92,6 @@ class MenuFragment : Fragment() {
                val foods = response.body()
                 if(foods!=null){
                     foodParent.datas.addAll(foods.data)
-          //          menuFood.addAll(foods.data)
-                    adapter!!.notifyDataSetChanged()
                     Log.d("JALAN","harusnya mah jalan ieu")
                 }
             }
@@ -101,6 +101,23 @@ class MenuFragment : Fragment() {
             }
 
         })
+        //data minuman
+        val call_drink = API_service!!.getDrink()
+        call_drink.enqueue(object :Callback<MenuList>{
+            override fun onResponse(call: Call<MenuList>, response: Response<MenuList>) {
+                val drinks = response.body()
+                if(drinks!=null){
+                    drinkParent.datas.addAll(drinks.data)
+                    Log.d("JALAN","Dapetin minuman")
+                }
+            }
+
+            override fun onFailure(call: Call<MenuList>, t: Throwable) {
+                Log.e("ERROR","Request gagal:"+t.localizedMessage)
+            }
+
+        })
+        adapter!!.notifyDataSetChanged()
     }
 
     override fun onDestroyView() {

@@ -2,7 +2,6 @@ package com.example.majika.daftarmenu
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,7 +40,7 @@ class MenuAdapter(private var mContext: Context, private val list:ArrayList<Menu
 
     class SectionHolder(view:View):RecyclerView.ViewHolder(view){
         val sectionName = view.findViewById(R.id.section_name) as TextView?
-      //  val sectionListMenu = view.findViewById(R.id.section_list_menu) as ImageView?
+    //    val sectionListMenu = view.findViewById(R.id.section_list_menu) as ImageView?
         val sectionMenu = view.findViewById<ConstraintLayout>(R.id.section_menu)
     }
 
@@ -131,12 +130,12 @@ class MenuAdapter(private var mContext: Context, private val list:ArrayList<Menu
     private fun collapseSection(position: Int,holder:SectionHolder) {
         val currentRow = list[position]
         val items = currentRow.datas
-        //ganti bagi
-        //ganti bg
-        holder.sectionMenu.setBackgroundColor(Color.WHITE)
-        //ganti warna text
-        holder.sectionName!!.setTextColor(Color.BLACK)
         list[position].isExpanded = false
+        //ganti warna
+        //bg
+        holder.sectionMenu.setBackgroundColor(Color.WHITE)
+        //fg
+        holder.sectionName!!.setTextColor(Color.BLACK)
         if(list[position].type==UIConstant.PARENT){
             items.forEach{ _ ->
                 list.removeAt(position+1)
@@ -151,9 +150,10 @@ class MenuAdapter(private var mContext: Context, private val list:ArrayList<Menu
         val items = currentRow.datas
         list[position].isExpanded = true
         var nextPosition = position
-        //ganti warna bg
+        //ganti warna
+        //bg
         holder.sectionMenu.setBackgroundColor(Color.GRAY)
-        //ganti warna text
+        //fg
         holder.sectionName!!.setTextColor(Color.BLACK)
         if(currentRow.type==UIConstant.PARENT){
             //kalau parent maka render childnya
