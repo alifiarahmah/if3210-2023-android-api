@@ -1,5 +1,7 @@
 package com.example.majika.branch
 
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +37,12 @@ class BranchAdapter(private val list: ArrayList<BranchItem>): RecyclerView.Adapt
 
         holder.branchNameView.text = item.name
         holder.branchLocationView.text = item.address
+        holder.mapsButton.setOnClickListener {
+            // map should be from google map
+            val mapIntent = Intent(Intent.ACTION_VIEW, Uri.parse("geo:${item.latitude},${item.longitude}"))
+            mapIntent.setPackage("com.google.android.apps.maps")
+            holder.mapsButton.context.startActivity(mapIntent)
+        }
     }
 
     override fun getItemCount(): Int {
