@@ -21,15 +21,21 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:dividerPadding="10sp"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingHorizontal="10sp"
+                android:paddingVertical="10sp">
 
                 <TextView
                     android:id="@+id/branch_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:lineSpacingExtra="16sp"
                     android:text="@string/branch_title"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/branch_location"
@@ -40,7 +46,7 @@
 
                 <Button
                     android:id="@+id/maps_button"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/maps" />
             </LinearLayout>
