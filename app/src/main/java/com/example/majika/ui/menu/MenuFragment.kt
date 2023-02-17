@@ -1,5 +1,10 @@
 package com.example.majika.ui.menu
 
+import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,7 +24,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MenuFragment : Fragment() {
+class MenuFragment : Fragment(),SensorEventListener {
 
     private var _binding: FragmentMenuBinding? = null
 
@@ -36,6 +41,12 @@ class MenuFragment : Fragment() {
     private val foodParent = MenuSection(title="Makanan")
     private val drinkParent = MenuSection(title="Minuman")
 
+    //sensor
+    private lateinit var sensorManager:SensorManager
+    private lateinit var sensor:Sensor
+
+    private var temperature:Float = 0.0f;
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,22 +60,14 @@ class MenuFragment : Fragment() {
         val recyclerView = binding.recyclerListMenu
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(activity)
-
-
         //set api service
         API_service = MenuClient.getInstance().create(MenuAPI::class.java)
-//        val list = ArrayList<MenuItem>()
-//        list.add(MenuItem("Nasi Goreng","-","IDR",100,20, MenuType.FOOD))
-//        list.add(MenuItem("Nasi Lemak","Kebenaran tak peranh sok sendiri - Papa Zola - ","IDR",100,20,MenuType.FOOD))
-//        list.add(MenuItem("Nasi Bakar","-","MYR",100,20, MenuType.FOOD))
-//        list.add(MenuItem("Susu Panas!","-","MYR",100,20,MenuType.DRINK))
         //list section
         val sections = ArrayList<MenuSection>()
         sections.add(foodParent)
         sections.add(drinkParent)
         //set food menu
         adapter = MenuAdapter(container!!.context, sections)
-      //  adapter.notifyDataSetChanged()
 
         recyclerView.adapter = adapter
 
@@ -75,12 +78,8 @@ class MenuFragment : Fragment() {
         binding.searchBar.setEndIconOnClickListener{
             println(binding.searchBar.editText?.text.toString())
         }
-
-
-//        val textView: TextView = binding.textMenu
-//        menuViewModel.text.observe(viewLifecycleOwner) {
-//            textView.text = it
-//        }
+        //setting sensor manager
+        sensorManager = activity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager
         return root
     }
 
@@ -120,8 +119,47 @@ class MenuFragment : Fragment() {
         adapter!!.notifyDataSetChanged()
     }
 
+    private fun getTemperature() {
+         //dapetin sensor
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
+        if(sensor==null){
+            //gak support
+            Log.e("ERROR","Sensor suhu tidak tersedia!")
+        }
+        else{
+            //daftarin sensor
+            sensorManager.registerListener(this,sensor,SensorManager.SENSOR_DELAY_NORMAL)
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+    //credit: https://jtmuller5.medium.com/a-quick-take-on-reading-sensor-values-in-android-studio-98e47343d42e
+    //kalau di pause stop sensor
+    override fun onPause() {
+        super.onPause()
+        sensorManager.unregisterListener(this)
+    }
+    //lanjutin sensor kalau continue
+    override fun onResume() {
+        super.onResume()
+        getTemperature()
+    }
+
+    override fun onSensorChanged(event: SensorEvent?) {
+        //nilainya berubah
+        try{
+            temperature = event!!.values[0]
+            Log.d("SENSOR","Temparature: ${temperature}")
+
+        }catch(e:java.lang.Error){
+            Log.e("SENSOR","Ada kesalahan saat mendapatkan data sensor")
+        }
+    }
+
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+        Log.d("SENSOR","Akurasi berubah")
     }
 }
