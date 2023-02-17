@@ -4,7 +4,10 @@
     <string name="title_branch">Cabang</string>
     <string name="title_menu">Menu</string>
     <string name="title_cart">Keranjang</string>
-    <string name="searchbar_hint">Masukkan nama menu...</string>
+    <string name="searchbar_hint">Masukkan nama menu…</string>
     <string name="minus_sign">-</string>
     <string name="plus_sign">+</string>
+    <string name="branch_title">Judul</string>
+    <string name="branch_location">Lokasi</string>
+    <string name="maps">Peta</string>
 </resources>
