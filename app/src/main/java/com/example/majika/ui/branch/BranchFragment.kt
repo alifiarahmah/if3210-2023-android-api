@@ -64,6 +64,7 @@ class BranchFragment : Fragment() {
                     val branchList: BranchList? = response.body()
                     if (branchList != null) {
                         branches.addAll(branchList.data)
+                        // TODO: sort all branches by distance to user's GPS location
                         adapter!!.notifyDataSetChanged()
                     }
                 }
