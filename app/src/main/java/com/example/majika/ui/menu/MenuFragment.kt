@@ -45,7 +45,7 @@ class MenuFragment : Fragment(),SensorEventListener {
 
     //sensor
     private lateinit var sensorManager: SensorManager
-    private lateinit var sensor: Sensor
+    private var sensor: Sensor? = null
 
     private var temperature: Float = 0.0f
 
@@ -60,7 +60,7 @@ class MenuFragment : Fragment(),SensorEventListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        clearView()
+      //  clearView()
         //enable action menu (topbar)
         setHasOptionsMenu(true)
         val menuViewModel =
@@ -74,8 +74,12 @@ class MenuFragment : Fragment(),SensorEventListener {
         //set api service
         API_service = MenuClient.getInstance().create(MenuAPI::class.java)
         //list section
-//        sections.add(foodParent)
-//        sections.add(drinkParent)
+        if(sections.size!=2){
+            Log.d("SECTIONS","Napa gak 2 jir? ${sections.size}")
+            sections.clear()
+            sections.add(foodParent)
+            sections.add(drinkParent)
+        }
         //set food menu
         adapter = MenuAdapter(container!!.context, sections)
 
@@ -88,7 +92,7 @@ class MenuFragment : Fragment(),SensorEventListener {
         binding.searchBar.setEndIconOnClickListener {
             println(binding.searchBar.editText?.text.toString())
             val text = binding.searchBar.editText?.text.toString()
-            clearView()
+           // clearView()
             if(text.length>0){
                 searchMenu(text)
             }
@@ -107,8 +111,6 @@ class MenuFragment : Fragment(),SensorEventListener {
         if(adapter!=null) {
             adapter?.clear()
         }
-        sections.add(foodParent)
-        sections.add(drinkParent)
     }
 
     private fun searchMenu(query: String) {
@@ -146,6 +148,7 @@ class MenuFragment : Fragment(),SensorEventListener {
     }
 
     private fun fetchData() {
+        Log.d("FETCG","NGEFETCH MANING")
         //data makanan
         val call = API_service!!.getFood()
         call.enqueue(object : Callback<MenuList> {

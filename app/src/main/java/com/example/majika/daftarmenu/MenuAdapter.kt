@@ -67,13 +67,6 @@ class MenuAdapter(private var mContext: Context, public var list:ArrayList<MenuS
             holder as SectionHolder
             holder.apply {
                 sectionName?.text = data.title
-                //set warma default
-                if(data.isExpanded){
-                    holder.sectionMenu.setBackgroundColor(Color.GRAY)
-                }
-                else{
-                    holder.sectionMenu.setBackgroundColor(Color.WHITE)
-                }
                 sectionMenu?.setOnClickListener{
                     expandOrCollapseSectionMenu(data,position,holder)
                 }
