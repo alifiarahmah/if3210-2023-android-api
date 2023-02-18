@@ -7,12 +7,12 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.majika.R
 import com.example.majika.daftarmenu.MenuAPI
 import com.example.majika.daftarmenu.MenuAdapter
 import com.example.majika.daftarmenu.MenuClient
@@ -47,11 +47,15 @@ class MenuFragment : Fragment(),SensorEventListener {
 
     private var temperature:Float = 0.0f;
 
+    private var mMenu:Menu? = null;
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        //enable action menu (topbar)
+        setHasOptionsMenu(true)
         val menuViewModel =
             ViewModelProvider(this)[MenuViewModel::class.java]
 
@@ -153,6 +157,13 @@ class MenuFragment : Fragment(),SensorEventListener {
         try{
             temperature = event!!.values[0]
             Log.d("SENSOR","Temparature: ${temperature}")
+            try {
+                //reset temperature di top bar
+                activity?.invalidateOptionsMenu()
+
+            }catch(e:java.lang.Error){
+                Log.e("SENSOR",e.localizedMessage)
+            }
 
         }catch(e:java.lang.Error){
             Log.e("SENSOR","Ada kesalahan saat mendapatkan data sensor")
@@ -161,5 +172,24 @@ class MenuFragment : Fragment(),SensorEventListener {
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
         Log.d("SENSOR","Akurasi berubah")
+    }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+       inflater.inflate(R.menu.main_menu,menu)
+        Log.d("SENSOR","kebentuk harusnya")
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        if(mMenu==null){
+            mMenu = menu
+        }
+        //dapetin item dari top nya
+        val item = menu?.findItem(R.id.top_main_menu)
+        //cari text viewnya
+        val textView = item?.actionView as TextView
+        //set text
+        textView.text = "${temperature} \u2103"
+        //set size
+        textView.textSize = 20.0f
+        Log.d("SENSOR","keganti cuk harusnya")
     }
 }
