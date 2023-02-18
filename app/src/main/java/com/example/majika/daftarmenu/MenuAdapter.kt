@@ -61,11 +61,19 @@ class MenuAdapter(private var mContext: Context, public var list:ArrayList<MenuS
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         //saat ngebind data
+        Log.d("POSITION","Posisi nya :$position")
         val data = list[position]
         if(data.type==UIConstant.PARENT){
             holder as SectionHolder
             holder.apply {
                 sectionName?.text = data.title
+                //set warma default
+                if(data.isExpanded){
+                    holder.sectionMenu.setBackgroundColor(Color.GRAY)
+                }
+                else{
+                    holder.sectionMenu.setBackgroundColor(Color.WHITE)
+                }
                 sectionMenu?.setOnClickListener{
                     expandOrCollapseSectionMenu(data,position,holder)
                 }
@@ -128,23 +136,29 @@ class MenuAdapter(private var mContext: Context, public var list:ArrayList<MenuS
         else{
             expandSection(position,holder)
         }
+        //update data
+        notifyDataSetChanged()
     }
 
     private fun collapseSection(position: Int,holder:SectionHolder) {
         val currentRow = list[position]
         val items = currentRow.datas
         list[position].isExpanded = false
-        //ganti warna
-        //bg
-        holder.sectionMenu.setBackgroundColor(Color.WHITE)
-        //fg
-        holder.sectionName!!.setTextColor(Color.BLACK)
         if(list[position].type==UIConstant.PARENT){
-            items.forEach{ _ ->
-                list.removeAt(position+1)
+            //ganti warna
+            //bg
+            holder.sectionMenu.setBackgroundColor(Color.WHITE)
+            //fg
+            holder.sectionName!!.setTextColor(Color.BLACK)
+            try{
+                items.forEach { _ ->
+                    list.removeAt(position + 1)
+                }
+            }catch(e:java.lang.IndexOutOfBoundsException){
+                Log.e("SECTION","Kelewat batas index cok")
             }
 
-            notifyDataSetChanged()
+
         }
     }
 
@@ -153,12 +167,12 @@ class MenuAdapter(private var mContext: Context, public var list:ArrayList<MenuS
         val items = currentRow.datas
         list[position].isExpanded = true
         var nextPosition = position
-        //ganti warna
-        //bg
-        holder.sectionMenu.setBackgroundColor(Color.GRAY)
-        //fg
-        holder.sectionName!!.setTextColor(Color.BLACK)
         if(currentRow.type==UIConstant.PARENT){
+            //ganti warna
+            //bg
+            holder.sectionMenu.setBackgroundColor(Color.GRAY)
+            //fg
+            holder.sectionName!!.setTextColor(Color.BLACK)
             //kalau parent maka render childnya
             items.forEach{ item->
                 val parentModel = MenuSection()
@@ -166,8 +180,6 @@ class MenuAdapter(private var mContext: Context, public var list:ArrayList<MenuS
                 parentModel.datas.add(item)
                 list.add(++nextPosition,parentModel)
             }
-            //update data
-            notifyDataSetChanged()
         }
     }
 
@@ -180,5 +192,12 @@ class MenuAdapter(private var mContext: Context, public var list:ArrayList<MenuS
     }
 
     override fun getItemCount(): Int = list.size
+
+    public fun clear(){
+        val size = list.size
+        Log.v("FILTER",size.toString())
+        list.clear()
+        notifyItemRangeRemoved(0,size)
+    }
 
 }

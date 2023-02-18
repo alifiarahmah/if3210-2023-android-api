@@ -20,6 +20,7 @@ import com.example.majika.daftarmenu.MenuClient
 import com.example.majika.data.MenuItem
 import com.example.majika.data.MenuList
 import com.example.majika.data.MenuSection
+import com.example.majika.data.MenuType
 import com.example.majika.databinding.FragmentMenuBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -59,6 +60,7 @@ class MenuFragment : Fragment(),SensorEventListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        clearView()
         //enable action menu (topbar)
         setHasOptionsMenu(true)
         val menuViewModel =
@@ -72,8 +74,8 @@ class MenuFragment : Fragment(),SensorEventListener {
         //set api service
         API_service = MenuClient.getInstance().create(MenuAPI::class.java)
         //list section
-        sections.add(foodParent)
-        sections.add(drinkParent)
+//        sections.add(foodParent)
+//        sections.add(drinkParent)
         //set food menu
         adapter = MenuAdapter(container!!.context, sections)
 
@@ -85,41 +87,53 @@ class MenuFragment : Fragment(),SensorEventListener {
         //set search bar listener
         binding.searchBar.setEndIconOnClickListener {
             println(binding.searchBar.editText?.text.toString())
-            searchMenu(binding.searchBar.editText?.text.toString())
+            val text = binding.searchBar.editText?.text.toString()
+            clearView()
+            if(text.length>0){
+                searchMenu(text)
+            }
+            else{
+                fetchData()
+            }
         }
         //setting sensor manager
         sensorManager = activity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager
         return root
     }
 
+    private fun clearView() {
+        foodParent.datas.clear()
+        drinkParent.datas.clear()
+        if(adapter!=null) {
+            adapter?.clear()
+        }
+        sections.add(foodParent)
+        sections.add(drinkParent)
+    }
+
     private fun searchMenu(query: String) {
         //        nembak ulang
         //data makanan
-        val call = API_service!!.getFood()
+        Log.d("SEARCH",query)
+        val call = API_service!!.getMenu()
         call.enqueue(object : Callback<MenuList> {
             override fun onResponse(call: Call<MenuList>, response: Response<MenuList>) {
-                val foods = response.body()
-                if (foods != null) {
+                val menus = response.body()
+                if (menus != null) {
                     //filter data
-                    foods.data.filter { food->food.name?.lowercase()!!.contains(query.lowercase()) }
-                    foodParent.datas.addAll(foods.data)
+                    val tempArray = menus.data.filter { menu->menu.name?.lowercase()!!.contains(query.lowercase()) }
+                    Log.v("ITEM",tempArray.size.toString())
+                    //kosongin dulu
+                    //masukin ke tempat yang sesuai
+                    for(menu in tempArray){
+                        if(menu.type==MenuType.Food){
+                            foodParent.datas.add(menu)
+                        }
+                        else if(menu.type==MenuType.Drink){
+                            drinkParent.datas.add(menu)
+                        }
+                    }
                     Log.d("JALAN", "harusnya mah dah kefilter makanannya")
-                }
-            }
-
-            override fun onFailure(call: Call<MenuList>, t: Throwable) {
-                Log.e("ERROR", "Request gagal:" + t.localizedMessage)
-            }
-
-        })
-        //data minuman
-        val call_drink = API_service!!.getDrink()
-        call_drink.enqueue(object : Callback<MenuList> {
-            override fun onResponse(call: Call<MenuList>, response: Response<MenuList>) {
-                val drinks = response.body()
-                if (drinks != null) {
-                    drinkParent.datas.addAll(drinks.data)
-                    Log.d("JALAN", "Dapetin minuman")
                 }
             }
 
@@ -209,7 +223,7 @@ class MenuFragment : Fragment(),SensorEventListener {
         //nilainya berubah
         try {
             temperature = event!!.values[0]
-            Log.d("SENSOR", "Temparature: $temperature")
+         //   Log.d("SENSOR", "Temparature: $temperature")
             try {
                 //reset temperature di top bar
                 activity?.invalidateOptionsMenu()
@@ -229,7 +243,7 @@ class MenuFragment : Fragment(),SensorEventListener {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main_menu, menu)
-        Log.d("SENSOR", "kebentuk harusnya")
+    //    Log.d("SENSOR", "kebentuk harusnya")
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
@@ -244,6 +258,6 @@ class MenuFragment : Fragment(),SensorEventListener {
         textView.text = "$temperature \u2103"
         //set size
         textView.textSize = 20.0f
-        Log.d("SENSOR", "keganti cuk harusnya")
+    //    Log.d("SENSOR", "keganti cuk harusnya")
     }
 }
