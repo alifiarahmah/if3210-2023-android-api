@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.majika.R
@@ -16,12 +17,16 @@ class BranchAdapter(private val list: ArrayList<BranchItem>): RecyclerView.Adapt
     class ItemHolder(view: View): RecyclerView.ViewHolder(view) {
         val branchNameView: TextView
         val branchLocationView: TextView
+        val branchPhoneView: TextView
         val mapsButton: Button
+        val phoneButton: ImageButton
 
         init {
             branchNameView = view.findViewById(R.id.branch_name)
             branchLocationView = view.findViewById(R.id.branch_location)
+            branchPhoneView = view.findViewById(R.id.branch_phone)
             mapsButton = view.findViewById(R.id.maps_button)
+            phoneButton = view.findViewById(R.id.phone_button)
         }
     }
 
@@ -37,11 +42,16 @@ class BranchAdapter(private val list: ArrayList<BranchItem>): RecyclerView.Adapt
 
         holder.branchNameView.text = item.name
         holder.branchLocationView.text = item.address
+        holder.branchPhoneView.text = item.phone_number
         holder.mapsButton.setOnClickListener {
             // map should be from google map
             val mapIntent = Intent(Intent.ACTION_VIEW, Uri.parse("geo:${item.latitude},${item.longitude}?q=${item.address}"))
             mapIntent.setPackage("com.google.android.apps.maps")
             holder.mapsButton.context.startActivity(mapIntent)
+        }
+        holder.phoneButton.setOnClickListener {
+            val phoneIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${item.phone_number}"))
+            holder.phoneButton.context.startActivity(phoneIntent)
         }
     }
 

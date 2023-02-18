@@ -10,4 +10,5 @@
     <string name="branch_title">Judul</string>
     <string name="branch_location">Lokasi</string>
     <string name="maps">Peta</string>
+    <string name="phone">Telepon</string>
 </resources>
