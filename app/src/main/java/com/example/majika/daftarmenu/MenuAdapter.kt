@@ -20,7 +20,7 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Currency
 
-class MenuAdapter(private var mContext: Context, private val list:ArrayList<MenuSection>): RecyclerView.Adapter<RecyclerView.ViewHolder>()
+class MenuAdapter(private var mContext: Context, public var list:ArrayList<MenuSection>): RecyclerView.Adapter<RecyclerView.ViewHolder>()
 {
     class ItemHolder( view: View): RecyclerView.ViewHolder(view){
         val textView:TextView

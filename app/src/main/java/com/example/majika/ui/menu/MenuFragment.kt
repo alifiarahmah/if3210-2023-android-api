@@ -46,10 +46,14 @@ class MenuFragment : Fragment(),SensorEventListener {
     private lateinit var sensorManager: SensorManager
     private lateinit var sensor: Sensor
 
-    private var temperature: Float = 0.0f;
+    private var temperature: Float = 0.0f
 
-    private var mMenu: Menu? = null;
+    private var mMenu: Menu? = null
 
+    private var sections =  ArrayList<MenuSection>()
+    private lateinit var filteredSections:ArrayList<MenuSection>
+    private lateinit var filteredFood:ArrayList<MenuSection>
+    private lateinit var filteredDrink:ArrayList<MenuSection>
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -68,7 +72,6 @@ class MenuFragment : Fragment(),SensorEventListener {
         //set api service
         API_service = MenuClient.getInstance().create(MenuAPI::class.java)
         //list section
-        val sections = ArrayList<MenuSection>()
         sections.add(foodParent)
         sections.add(drinkParent)
         //set food menu
@@ -82,20 +85,31 @@ class MenuFragment : Fragment(),SensorEventListener {
         //set search bar listener
         binding.searchBar.setEndIconOnClickListener {
             println(binding.searchBar.editText?.text.toString())
+            searchMenu(binding.searchBar.editText?.text.toString())
         }
         //setting sensor manager
         sensorManager = activity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager
         return root
     }
 
-    private fun fetchData() {
+    private fun searchMenu(query: String) {
+//        nembak ulang
+   //     fetchData()
+    }
+    private fun addToList(list:ArrayList<com.example.majika.data.MenuItem>,newlist:ArrayList<com.example.majika.data.MenuItem>){
+        list.addAll((newlist))
+    }
+    private fun fetchData(
+        processor:(list:ArrayList<com.example.majika.data.MenuItem>,
+        newlist:ArrayList<com.example.majika.data.MenuItem>)->Unit
+        = { list,newlist->list.addAll(newlist) }) {
         //data makanan
         val call = API_service!!.getFood()
         call.enqueue(object : Callback<MenuList> {
             override fun onResponse(call: Call<MenuList>, response: Response<MenuList>) {
                 val foods = response.body()
                 if (foods != null) {
-                    foodParent.datas.addAll(foods.data)
+                    processor(foodParent.datas,foods.data as ArrayList<MenuItem>)
                     Log.d("JALAN", "harusnya mah jalan ieu")
                 }
             }
@@ -111,7 +125,7 @@ class MenuFragment : Fragment(),SensorEventListener {
             override fun onResponse(call: Call<MenuList>, response: Response<MenuList>) {
                 val drinks = response.body()
                 if (drinks != null) {
-                    drinkParent.datas.addAll(drinks.data)
+                    processor(drinkParent.datas,drinks.data as ArrayList<MenuItem>)
                     Log.d("JALAN", "Dapetin minuman")
                 }
             }
@@ -121,6 +135,11 @@ class MenuFragment : Fragment(),SensorEventListener {
             }
 
         })
+        notifyChange()
+
+    }
+
+    private fun notifyChange() {
         adapter!!.notifyDataSetChanged()
     }
 
@@ -161,7 +180,7 @@ class MenuFragment : Fragment(),SensorEventListener {
         //nilainya berubah
         try {
             temperature = event!!.values[0]
-            Log.d("SENSOR", "Temparature: ${temperature}")
+            Log.d("SENSOR", "Temparature: $temperature")
             try {
                 //reset temperature di top bar
                 activity?.invalidateOptionsMenu()
@@ -193,7 +212,7 @@ class MenuFragment : Fragment(),SensorEventListener {
         //cari text viewnya
         val textView = item?.actionView as TextView
         //set text
-        textView.text = "${temperature} \u2103"
+        textView.text = "$temperature \u2103"
         //set size
         textView.textSize = 20.0f
         Log.d("SENSOR", "keganti cuk harusnya")
