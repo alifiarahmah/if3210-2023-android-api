@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,21 +34,21 @@ class MenuFragment : Fragment(),SensorEventListener {
     private val binding get() = _binding!!
 
     //api clinet
-    private var API_service:MenuAPI? = null
-  //  private var menus:ArrayList<MenuItem> = ArrayList()
+    private var API_service: MenuAPI? = null
+    //  private var menus:ArrayList<MenuItem> = ArrayList()
 
-    private var adapter:MenuAdapter? = null
+    private var adapter: MenuAdapter? = null
 
-    private val foodParent = MenuSection(title="Makanan")
-    private val drinkParent = MenuSection(title="Minuman")
+    private val foodParent = MenuSection(title = "Makanan")
+    private val drinkParent = MenuSection(title = "Minuman")
 
     //sensor
-    private lateinit var sensorManager:SensorManager
-    private lateinit var sensor:Sensor
+    private lateinit var sensorManager: SensorManager
+    private lateinit var sensor: Sensor
 
-    private var temperature:Float = 0.0f;
+    private var temperature: Float = 0.0f;
 
-    private var mMenu:Menu? = null;
+    private var mMenu: Menu? = null;
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,7 +61,7 @@ class MenuFragment : Fragment(),SensorEventListener {
             ViewModelProvider(this)[MenuViewModel::class.java]
 
         _binding = FragmentMenuBinding.inflate(inflater, container, false)
-        val root:View = binding.root
+        val root: View = binding.root
         val recyclerView = binding.recyclerListMenu
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(activity)
@@ -79,7 +80,7 @@ class MenuFragment : Fragment(),SensorEventListener {
         fetchData()
 
         //set search bar listener
-        binding.searchBar.setEndIconOnClickListener{
+        binding.searchBar.setEndIconOnClickListener {
             println(binding.searchBar.editText?.text.toString())
         }
         //setting sensor manager
@@ -90,33 +91,33 @@ class MenuFragment : Fragment(),SensorEventListener {
     private fun fetchData() {
         //data makanan
         val call = API_service!!.getFood()
-        call.enqueue(object :Callback<MenuList>{
+        call.enqueue(object : Callback<MenuList> {
             override fun onResponse(call: Call<MenuList>, response: Response<MenuList>) {
-               val foods = response.body()
-                if(foods!=null){
+                val foods = response.body()
+                if (foods != null) {
                     foodParent.datas.addAll(foods.data)
-                    Log.d("JALAN","harusnya mah jalan ieu")
+                    Log.d("JALAN", "harusnya mah jalan ieu")
                 }
             }
 
             override fun onFailure(call: Call<MenuList>, t: Throwable) {
-                Log.e("ERROR","Request gagal:"+t.localizedMessage)
+                Log.e("ERROR", "Request gagal:" + t.localizedMessage)
             }
 
         })
         //data minuman
         val call_drink = API_service!!.getDrink()
-        call_drink.enqueue(object :Callback<MenuList>{
+        call_drink.enqueue(object : Callback<MenuList> {
             override fun onResponse(call: Call<MenuList>, response: Response<MenuList>) {
                 val drinks = response.body()
-                if(drinks!=null){
+                if (drinks != null) {
                     drinkParent.datas.addAll(drinks.data)
-                    Log.d("JALAN","Dapetin minuman")
+                    Log.d("JALAN", "Dapetin minuman")
                 }
             }
 
             override fun onFailure(call: Call<MenuList>, t: Throwable) {
-                Log.e("ERROR","Request gagal:"+t.localizedMessage)
+                Log.e("ERROR", "Request gagal:" + t.localizedMessage)
             }
 
         })
@@ -124,15 +125,17 @@ class MenuFragment : Fragment(),SensorEventListener {
     }
 
     private fun getTemperature() {
-         //dapetin sensor
+        //dapetin sensor
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
-        if(sensor==null){
+        if (sensor == null) {
             //gak support
-            Log.e("ERROR","Sensor suhu tidak tersedia!")
-        }
-        else{
+            Log.e("ERROR", "Sensor suhu tidak tersedia!")
+            //show error
+            //https://stackoverflow.com/questions/14400298/best-practice-for-displaying-error-messages
+            Toast.makeText(context,"Sensor Suhu Tidak Tersedia di Perangkat!",Toast.LENGTH_SHORT).show()
+        } else {
             //daftarin sensor
-            sensorManager.registerListener(this,sensor,SensorManager.SENSOR_DELAY_NORMAL)
+            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
         }
     }
 
@@ -140,12 +143,14 @@ class MenuFragment : Fragment(),SensorEventListener {
         super.onDestroyView()
         _binding = null
     }
+
     //credit: https://jtmuller5.medium.com/a-quick-take-on-reading-sensor-values-in-android-studio-98e47343d42e
     //kalau di pause stop sensor
     override fun onPause() {
         super.onPause()
         sensorManager.unregisterListener(this)
     }
+
     //lanjutin sensor kalau continue
     override fun onResume() {
         super.onResume()
@@ -154,32 +159,33 @@ class MenuFragment : Fragment(),SensorEventListener {
 
     override fun onSensorChanged(event: SensorEvent?) {
         //nilainya berubah
-        try{
+        try {
             temperature = event!!.values[0]
-            Log.d("SENSOR","Temparature: ${temperature}")
+            Log.d("SENSOR", "Temparature: ${temperature}")
             try {
                 //reset temperature di top bar
                 activity?.invalidateOptionsMenu()
 
-            }catch(e:java.lang.Error){
-                Log.e("SENSOR",e.localizedMessage)
+            } catch (e: java.lang.Error) {
+                Log.e("SENSOR", e.localizedMessage)
             }
 
-        }catch(e:java.lang.Error){
-            Log.e("SENSOR","Ada kesalahan saat mendapatkan data sensor")
+        } catch (e: java.lang.Error) {
+            Log.e("SENSOR", "Ada kesalahan saat mendapatkan data sensor")
         }
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-        Log.d("SENSOR","Akurasi berubah")
+        Log.d("SENSOR", "Akurasi berubah")
     }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-       inflater.inflate(R.menu.main_menu,menu)
-        Log.d("SENSOR","kebentuk harusnya")
+        inflater.inflate(R.menu.main_menu, menu)
+        Log.d("SENSOR", "kebentuk harusnya")
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
-        if(mMenu==null){
+        if (mMenu == null) {
             mMenu = menu
         }
         //dapetin item dari top nya
@@ -190,6 +196,6 @@ class MenuFragment : Fragment(),SensorEventListener {
         textView.text = "${temperature} \u2103"
         //set size
         textView.textSize = 20.0f
-        Log.d("SENSOR","keganti cuk harusnya")
+        Log.d("SENSOR", "keganti cuk harusnya")
     }
 }
