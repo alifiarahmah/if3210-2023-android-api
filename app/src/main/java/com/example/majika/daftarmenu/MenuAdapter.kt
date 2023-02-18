@@ -2,6 +2,7 @@ package com.example.majika.daftarmenu
 
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -80,6 +81,7 @@ class MenuAdapter(private var mContext: Context, public var list:ArrayList<MenuS
                     println("Data kosong!")
                     return
                 }
+                Log.v("ITEM",item.toString())
                 holder.textView.text = item.name
                 //format harga
                 val price = NumberFormat.getCurrencyInstance()

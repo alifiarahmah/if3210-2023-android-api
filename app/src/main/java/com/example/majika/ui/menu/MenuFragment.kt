@@ -93,23 +93,52 @@ class MenuFragment : Fragment(),SensorEventListener {
     }
 
     private fun searchMenu(query: String) {
-//        nembak ulang
-   //     fetchData()
-    }
-    private fun addToList(list:ArrayList<com.example.majika.data.MenuItem>,newlist:ArrayList<com.example.majika.data.MenuItem>){
-        list.addAll((newlist))
-    }
-    private fun fetchData(
-        processor:(list:ArrayList<com.example.majika.data.MenuItem>,
-        newlist:ArrayList<com.example.majika.data.MenuItem>)->Unit
-        = { list,newlist->list.addAll(newlist) }) {
+        //        nembak ulang
         //data makanan
         val call = API_service!!.getFood()
         call.enqueue(object : Callback<MenuList> {
             override fun onResponse(call: Call<MenuList>, response: Response<MenuList>) {
                 val foods = response.body()
                 if (foods != null) {
-                    processor(foodParent.datas,foods.data as ArrayList<MenuItem>)
+                    //filter data
+                    foods.data.filter { food->food.name?.lowercase()!!.contains(query.lowercase()) }
+                    foodParent.datas.addAll(foods.data)
+                    Log.d("JALAN", "harusnya mah dah kefilter makanannya")
+                }
+            }
+
+            override fun onFailure(call: Call<MenuList>, t: Throwable) {
+                Log.e("ERROR", "Request gagal:" + t.localizedMessage)
+            }
+
+        })
+        //data minuman
+        val call_drink = API_service!!.getDrink()
+        call_drink.enqueue(object : Callback<MenuList> {
+            override fun onResponse(call: Call<MenuList>, response: Response<MenuList>) {
+                val drinks = response.body()
+                if (drinks != null) {
+                    drinkParent.datas.addAll(drinks.data)
+                    Log.d("JALAN", "Dapetin minuman")
+                }
+            }
+
+            override fun onFailure(call: Call<MenuList>, t: Throwable) {
+                Log.e("ERROR", "Request gagal:" + t.localizedMessage)
+            }
+
+        })
+        notifyChange()
+    }
+
+    private fun fetchData() {
+        //data makanan
+        val call = API_service!!.getFood()
+        call.enqueue(object : Callback<MenuList> {
+            override fun onResponse(call: Call<MenuList>, response: Response<MenuList>) {
+                val foods = response.body()
+                if (foods != null) {
+                    foodParent.datas.addAll(foods.data)
                     Log.d("JALAN", "harusnya mah jalan ieu")
                 }
             }
@@ -125,7 +154,7 @@ class MenuFragment : Fragment(),SensorEventListener {
             override fun onResponse(call: Call<MenuList>, response: Response<MenuList>) {
                 val drinks = response.body()
                 if (drinks != null) {
-                    processor(drinkParent.datas,drinks.data as ArrayList<MenuItem>)
+                    drinkParent.datas.addAll(drinks.data)
                     Log.d("JALAN", "Dapetin minuman")
                 }
             }
