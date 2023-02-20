@@ -9,23 +9,63 @@
         android:id="@+id/navigation_camera"
         android:name="com.example.majika.ui.camera.CameraFragment"
         android:label="@string/title_camera"
-        tools:layout="@layout/fragment_branch" />
+        tools:layout="@layout/fragment_branch" >
+        <action
+            android:id="@+id/action_navigation_camera_to_navigation_branch"
+            app:destination="@id/navigation_branch" />
+        <action
+            android:id="@+id/action_navigation_camera_to_navigation_cart"
+            app:destination="@id/navigation_cart" />
+        <action
+            android:id="@+id/action_navigation_camera_to_navigation_menu"
+            app:destination="@id/navigation_menu" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_branch"
         android:name="com.example.majika.ui.branch.BranchFragment"
         android:label="@string/title_branch"
-        tools:layout="@layout/fragment_branch" />
+        tools:layout="@layout/fragment_branch" >
+        <action
+            android:id="@+id/action_navigation_branch_to_navigation_cart"
+            app:destination="@id/navigation_cart" />
+        <action
+            android:id="@+id/action_navigation_branch_to_navigation_menu"
+            app:destination="@id/navigation_menu" />
+        <action
+            android:id="@+id/action_navigation_branch_to_navigation_camera"
+            app:destination="@id/navigation_camera" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_menu"
         android:name="com.example.majika.ui.menu.MenuFragment"
         android:label="@string/title_menu"
-        tools:layout="@layout/fragment_menu" />
+        tools:layout="@layout/fragment_menu" >
+        <action
+            android:id="@+id/action_navigation_menu_to_navigation_cart"
+            app:destination="@id/navigation_cart" />
+        <action
+            android:id="@+id/action_navigation_menu_to_navigation_branch"
+            app:destination="@id/navigation_branch" />
+        <action
+            android:id="@+id/action_navigation_menu_to_navigation_camera"
+            app:destination="@id/navigation_camera" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_cart"
         android:name="com.example.majika.ui.cart.CartFragment"
         android:label="@string/title_cart"
-        tools:layout="@layout/fragment_cart" />
+        tools:layout="@layout/fragment_cart" >
+        <action
+            android:id="@+id/action_navigation_cart_to_navigation_menu"
+            app:destination="@id/navigation_menu" />
+        <action
+            android:id="@+id/action_navigation_cart_to_navigation_branch"
+            app:destination="@id/navigation_branch" />
+        <action
+            android:id="@+id/action_navigation_cart_to_navigation_camera"
+            app:destination="@id/navigation_camera" />
+    </fragment>
 </navigation>

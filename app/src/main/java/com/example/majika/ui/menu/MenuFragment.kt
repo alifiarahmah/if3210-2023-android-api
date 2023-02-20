@@ -6,6 +6,7 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.*
 import android.widget.TextView
@@ -13,6 +14,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.majika.R
 import com.example.majika.daftarmenu.MenuAPI
 import com.example.majika.daftarmenu.MenuAdapter
@@ -55,6 +57,11 @@ class MenuFragment : Fragment(),SensorEventListener {
     private lateinit var filteredSections:ArrayList<MenuSection>
     private lateinit var filteredFood:ArrayList<MenuSection>
     private lateinit var filteredDrink:ArrayList<MenuSection>
+
+    //state
+    private var recyclerViewState:Parcelable? = null
+
+    private lateinit var recyclerView:RecyclerView
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -68,11 +75,12 @@ class MenuFragment : Fragment(),SensorEventListener {
 
         _binding = FragmentMenuBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        val recyclerView = binding.recyclerListMenu
+        recyclerView = binding.recyclerListMenu
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         //set api service
         API_service = MenuClient.getInstance().create(MenuAPI::class.java)
+        Log.d("SECTIONS","Kerender ulang gak lu? ${sections.size}")
         //list section
         if(sections.size!=2){
             Log.d("SECTIONS","Napa gak 2 jir? ${sections.size}")
@@ -84,9 +92,12 @@ class MenuFragment : Fragment(),SensorEventListener {
         adapter = MenuAdapter(container!!.context, sections)
 
         recyclerView.adapter = adapter
-
-        //fetch data
-        fetchData()
+        Log.d("JUMLAH ITEM","sebelum food fetcg: ${foodParent.datas.size}")
+        //fetch data jika kosong
+        if(foodParent.datas.size==0 && drinkParent.datas.size==0){
+            fetchData()
+        }
+        Log.d("JUMLAH ITEM","sesudah food fetcg: ${foodParent.datas.size}")
 
         //set search bar listener
         binding.searchBar.setEndIconOnClickListener {
@@ -155,7 +166,10 @@ class MenuFragment : Fragment(),SensorEventListener {
             override fun onResponse(call: Call<MenuList>, response: Response<MenuList>) {
                 val foods = response.body()
                 if (foods != null) {
+                    Log.d("JUMLAH ITEM","sebelum food fetcg: ${foodParent.datas.size}")
                     foodParent.datas.addAll(foods.data)
+                    Log.d("JUMLAH ITEM","sesudah food fetcg: ${foodParent.datas.size}")
+                    Log.d("JUMLAH ITEM","dqta: ${foods.data.size }")
                     Log.d("JALAN", "harusnya mah jalan ieu")
                 }
             }
@@ -219,6 +233,8 @@ class MenuFragment : Fragment(),SensorEventListener {
     //lanjutin sensor kalau continue
     override fun onResume() {
         super.onResume()
+        //restore state
+        recyclerView.layoutManager?.onRestoreInstanceState(recyclerViewState)
         getTemperature()
     }
 
@@ -263,4 +279,17 @@ class MenuFragment : Fragment(),SensorEventListener {
         textView.textSize = 20.0f
     //    Log.d("SENSOR", "keganti cuk harusnya")
     }
+
+    //simpan state kalau ganti halaman
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable("RECYCLER_VIEW_STATE",recyclerView.layoutManager?.onSaveInstanceState())
+    }
+
+    //load state saat kembali
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        recyclerViewState = savedInstanceState?.getParcelable("RECYCLER_VIEW_STATE")
+    }
+
 }
