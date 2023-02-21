@@ -83,8 +83,12 @@ class MenuFragment : Fragment(),SensorEventListener {
         if(sections.size<2){
             Log.d("SECTIONS","Napa gak 2 jir? ${sections.size}")
             sections.clear()
-            sections.add(foodParent)
-            sections.add(drinkParent)
+            if(foodParent.datas.size>0){
+                sections.add(foodParent)
+            }
+            if(drinkParent.datas.size>0){
+                sections.add(drinkParent)
+            }
         }
         //set food menu
         adapter = MenuAdapter(container!!.context, sections)
@@ -93,6 +97,9 @@ class MenuFragment : Fragment(),SensorEventListener {
         Log.d("JUMLAH ITEM","sebelum food fetcg: ${foodParent.datas.size}")
         //fetch data jika kosong
         if(foodParent.datas.size==0 && drinkParent.datas.size==0){
+            //tambahin lagi
+            sections.add(foodParent)
+            sections.add(drinkParent)
             fetchData()
         }
         Log.d("JUMLAH ITEM","sesudah food fetcg: ${foodParent.datas.size}")
@@ -103,6 +110,7 @@ class MenuFragment : Fragment(),SensorEventListener {
             val text = binding.searchBar.editText?.text.toString()
            // clearView()
             if(text.length>0){
+                //clear arraynya dulu
                 searchMenu(text)
             }
             else{
@@ -153,6 +161,19 @@ class MenuFragment : Fragment(),SensorEventListener {
                             drinkParent.datas.add(menu)
                         }
                     }
+                    //cek apakah ada
+                    if(foodParent.datas.size==0){
+                        //kalau gak ada gak usah ditampilin
+                        if(sections.contains(foodParent)) {
+                            sections.remove(foodParent)
+                        }
+                    }
+                    if(drinkParent.datas.size==0){
+                        //kalau gak ada gak usah ditampilin
+                        if(sections.contains(drinkParent)) {
+                            sections.remove(drinkParent)
+                        }
+                    }
                     Log.d("JALAN", "harusnya mah dah kefilter makanannya")
                 }
             }
@@ -167,6 +188,9 @@ class MenuFragment : Fragment(),SensorEventListener {
 
     private fun fetchData() {
         Log.d("FETCG","NGEFETCH MANING")
+        //bersihkan data dulu
+        foodParent.datas.clear()
+        drinkParent.datas.clear()
         //data makanan
         val call = API_service!!.getFood()
         call.enqueue(object : Callback<MenuList> {
@@ -178,6 +202,18 @@ class MenuFragment : Fragment(),SensorEventListener {
                     Log.d("JUMLAH ITEM","sesudah food fetcg: ${foodParent.datas.size}")
                     Log.d("JUMLAH ITEM","dqta: ${foods.data.size }")
                     Log.d("JALAN", "harusnya mah jalan ieu")
+                    //cek apakah ada
+                    if(foodParent.datas.size==0){
+                        //kalau gak ada gak usah ditampilin
+                        if(sections.contains(foodParent)) {
+                            sections.remove(foodParent)
+                        }
+                    }
+                    else if(!sections.contains(foodParent)){
+                        //kalau datanya ada tapi di section kosong
+                        sections.add(0,foodParent)
+                    }
+
                 }
             }
 
@@ -194,6 +230,16 @@ class MenuFragment : Fragment(),SensorEventListener {
                 if (drinks != null) {
                     drinkParent.datas.addAll(drinks.data)
                     Log.d("JALAN", "Dapetin minuman")
+                    if(drinkParent.datas.size==0){
+                        //kalau gak ada gak usah ditampilin
+                        if(sections.contains(drinkParent)) {
+                            sections.remove(drinkParent)
+                        }
+                    }
+                    else if(!sections.contains(drinkParent)){
+                        //kalau datanya ada tapi di section kosong
+                        sections.add(sections.size,drinkParent)
+                    }
                 }
             }
 
