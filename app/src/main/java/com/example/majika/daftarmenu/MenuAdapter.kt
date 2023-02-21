@@ -140,9 +140,9 @@ class MenuAdapter(private var mContext: Context, public var list:ArrayList<MenuS
         if(list[position].type==UIConstant.PARENT){
             //ganti warna
             //bg
-            holder.sectionMenu.setBackgroundColor(Color.WHITE)
-            //fg
-            holder.sectionName!!.setTextColor(Color.BLACK)
+//            holder.sectionMenu.setBackgroundColor(Color.WHITE)
+//            //fg
+//            holder.sectionName!!.setTextColor(Color.BLACK)
             try{
                 items.forEach { _ ->
                     list.removeAt(position + 1)
@@ -163,9 +163,9 @@ class MenuAdapter(private var mContext: Context, public var list:ArrayList<MenuS
         if(currentRow.type==UIConstant.PARENT){
             //ganti warna
             //bg
-            holder.sectionMenu.setBackgroundColor(Color.GRAY)
-            //fg
-            holder.sectionName!!.setTextColor(Color.BLACK)
+//            holder.sectionMenu.setBackgroundColor(Color.GRAY)
+//            //fg
+//            holder.sectionName!!.setTextColor(Color.BLACK)
             //kalau parent maka render childnya
             items.forEach{ item->
                 val parentModel = MenuSection()

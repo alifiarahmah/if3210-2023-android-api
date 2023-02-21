@@ -19,10 +19,8 @@ import com.example.majika.R
 import com.example.majika.daftarmenu.MenuAPI
 import com.example.majika.daftarmenu.MenuAdapter
 import com.example.majika.daftarmenu.MenuClient
+import com.example.majika.data.*
 import com.example.majika.data.MenuItem
-import com.example.majika.data.MenuList
-import com.example.majika.data.MenuSection
-import com.example.majika.data.MenuType
 import com.example.majika.databinding.FragmentMenuBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -293,6 +291,7 @@ class MenuFragment : Fragment(),SensorEventListener {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelable("RECYCLER_VIEW_STATE",recyclerView.layoutManager?.onSaveInstanceState())
+        //update warna
     }
 
     //load state saat kembali
