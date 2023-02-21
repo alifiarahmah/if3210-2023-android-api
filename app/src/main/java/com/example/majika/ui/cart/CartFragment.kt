@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.majika.R
 import com.example.majika.cart.Cart
 import com.example.majika.cart.CartAdapter
@@ -60,6 +61,24 @@ class CartFragment : Fragment() {
         }
         binding.totalPrice.text = totalPrice.toString()
 
+        // if item in cart changed, update total price
+        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onChanged() {
+                super.onChanged()
+                var totalCartPrice = 0
+                for (item in cart) {
+                    totalCartPrice += item.price!! * item.quantity!!
+                }
+                binding.totalPrice.text = totalCartPrice.toString()
+            }
+        })
+
+        // if cart is empty, hide checkout button
+        if (cart.isEmpty()) {
+            binding.checkoutButton.visibility = View.GONE
+        }
+
+        // if cart is not empty, show checkout button to payment fragment
         binding.checkoutButton.setOnClickListener {
             val paymentFragment = PaymentFragment()
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
