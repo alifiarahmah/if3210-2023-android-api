@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.majika.cart.Cart
+import com.example.majika.cart.CartAdapter
 import com.example.majika.databinding.FragmentCartBinding
 
 class CartFragment : Fragment() {
@@ -22,16 +24,33 @@ class CartFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val cartViewModel =
-            ViewModelProvider(this).get(CartViewModel::class.java)
+        ViewModelProvider(this)[CartViewModel::class.java]
 
         _binding = FragmentCartBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        val recyclerView = binding.recyclerListCart
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = LinearLayoutManager(activity)
 
-        val textView: TextView = binding.textCart
-        cartViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
+//        val db = Room.databaseBuilder(
+//            requireContext(),
+//            CartDatabase::class.java, "cart-database"
+//        ).allowMainThreadQueries().build()
+
+//        val cartDao = db.cartDao()
+
+//        val cart = cartDao.getAll()
+
+        // dummy data
+        val cart : ArrayList<Cart> = ArrayList()
+        cart.add(Cart(1, "Baju", 10000, 1))
+        cart.add(Cart(2, "Celana", 20000, 2))
+        cart.add(Cart(3, "Sepatu", 30000, 3))
+
+        val adapter = CartAdapter(cart as ArrayList<Cart>)
+
+        recyclerView.adapter = adapter
+
         return root
     }
 
