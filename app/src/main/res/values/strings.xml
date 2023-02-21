@@ -13,4 +13,7 @@
     <string name="phone">Telepon</string>
     <string name="jumlah">Jumlah</string>
     <string name="hapus">Hapus</string>
+    <string name="pay">Bayar</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

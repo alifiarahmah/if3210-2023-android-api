@@ -7,9 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.majika.R
 import com.example.majika.cart.Cart
 import com.example.majika.cart.CartAdapter
 import com.example.majika.databinding.FragmentCartBinding
+import com.example.majika.ui.payment.PaymentFragment
 
 class CartFragment : Fragment() {
 
@@ -47,9 +49,24 @@ class CartFragment : Fragment() {
         cart.add(Cart(2, "Celana", 20000, 2))
         cart.add(Cart(3, "Sepatu", 30000, 3))
 
-        val adapter = CartAdapter(cart as ArrayList<Cart>)
+        val adapter = CartAdapter(cart)
 
         recyclerView.adapter = adapter
+
+        // set total price
+        var totalPrice = 0
+        for (item in cart) {
+            totalPrice += item.price!! * item.quantity!!
+        }
+        binding.totalPrice.text = totalPrice.toString()
+
+        binding.checkoutButton.setOnClickListener {
+            val paymentFragment = PaymentFragment()
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.nav_host_fragment_activity_main, paymentFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
 
         return root
     }
