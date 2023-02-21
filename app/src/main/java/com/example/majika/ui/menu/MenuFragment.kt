@@ -82,7 +82,7 @@ class MenuFragment : Fragment(),SensorEventListener {
         API_service = MenuClient.getInstance().create(MenuAPI::class.java)
         Log.d("SECTIONS","Kerender ulang gak lu? ${sections.size}")
         //list section
-        if(sections.size!=2){
+        if(sections.size<2){
             Log.d("SECTIONS","Napa gak 2 jir? ${sections.size}")
             sections.clear()
             sections.add(foodParent)
@@ -126,6 +126,7 @@ class MenuFragment : Fragment(),SensorEventListener {
 
     private fun searchMenu(query: String) {
         //        nembak ulang
+
         //data makanan
         Log.d("SEARCH",query)
         val call = API_service!!.getMenu()
@@ -133,6 +134,12 @@ class MenuFragment : Fragment(),SensorEventListener {
             override fun onResponse(call: Call<MenuList>, response: Response<MenuList>) {
                 val menus = response.body()
                 if (menus != null) {
+                    //hapus yang lama
+                    if(adapter!=null){
+                        adapter?.clear()
+                    }
+                    sections.add(foodParent)
+                    sections.add(drinkParent)
                     //filter data
                     val tempArray = menus.data.filter { menu->menu.name?.lowercase()!!.contains(query.lowercase()) }
                     Log.v("ITEM",tempArray.size.toString())
