@@ -137,6 +137,8 @@ class MenuFragment : Fragment(),SensorEventListener {
                     val tempArray = menus.data.filter { menu->menu.name?.lowercase()!!.contains(query.lowercase()) }
                     Log.v("ITEM",tempArray.size.toString())
                     //kosongin dulu
+                    foodParent.datas.clear()
+                    drinkParent.datas.clear()
                     //masukin ke tempat yang sesuai
                     for(menu in tempArray){
                         if(menu.type==MenuType.Food){
