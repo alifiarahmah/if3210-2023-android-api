@@ -3,3 +3,6 @@ Menu:
 2. masih ngebug kadang kalau sambil buka sambil nyari
 3. konekin ke ROAM (mesen)
 4. landscape mode
+
+Twibbon
+1. masih ngecrash kalau pindah ke halaman lain (NUllPointer ke twibbon)
