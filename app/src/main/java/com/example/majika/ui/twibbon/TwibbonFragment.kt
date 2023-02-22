@@ -6,8 +6,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -33,7 +31,6 @@ import com.example.majika.R
 import com.example.majika.databinding.FragmentTwibbonBinding
 import com.example.majika.twibbon.ImageManip
 import com.google.common.util.concurrent.ListenableFuture
-import java.util.concurrent.atomic.AtomicReference
 
 class TwibbonFragment : Fragment() {
 
@@ -61,7 +58,7 @@ class TwibbonFragment : Fragment() {
 
     private lateinit var cameraSelector: CameraSelector
 
-    private lateinit var TWIBBON:Bitmap;
+    private lateinit var TWIBBON:Bitmap
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -69,7 +66,8 @@ class TwibbonFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         //initiate twibbon
-        TWIBBON = BitmapFactory.decodeResource(resources, R.drawable.twibbon)
+        Log.d("TWIBBON",resources.toString())
+            TWIBBON = BitmapFactory.decodeResource(resources, R.drawable.twibbon)
         twibbonViewModel =
             ViewModelProvider(this).get(TwibbonViewModel::class.java)
 
@@ -136,6 +134,16 @@ class TwibbonFragment : Fragment() {
             CameraSelector.DEFAULT_BACK_CAMERA
         }
         Log.d("CAMERA","KEganti gak")
+        //dset up viewer
+        preview = Preview.Builder().build().also{
+            it.setSurfaceProvider(viewer.surfaceProvider)
+        }
+
+        imageCapture = ImageCapture.Builder()
+            .setTargetRotation(viewer.display.rotation)
+            .build()
+        //cek apakah provider ada
+      //  cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
         //bind ulang
         //tunggu rebinding
 //        Handler(Looper.getMainLooper()).postDelayed({
@@ -216,12 +224,12 @@ class TwibbonFragment : Fragment() {
         val twibbonCanvas = Canvas(result)
         //resize twibbon, karena twibbon sangat gede aslinya
         Log.v("TWIBBON",image.toString())
-        if(image==null){
-            Log.d("TWIBBON","null")
-        }
-        else{
-            Log.d("TWIBBON","gak null ${image.width} ${image.height} ${TWIBBON}")
-        }
+//        if(image==null){
+//            Log.d("TWIBBON","null")
+//        }
+//        else{
+//            Log.d("TWIBBON","gak null ${image.width} ${image.height} ${TWIBBON}")
+//        }
         val Resized_Twibbon = Bitmap.createScaledBitmap(TWIBBON,image.width,image.height,true)
         Log.d("TWIBBON","ja;am cuy")
         //gambar gambar awal
@@ -295,5 +303,140 @@ class TwibbonFragment : Fragment() {
                 requireActivity().finish()
             }
         }
+    }
+    //simpan state kalau ganti halaman
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable("TWIBBON_DATA",TWIBBON)
+        var state = 0
+        if(switchCameraButton.visibility==View.VISIBLE){
+            //camera milih
+            if(cameraSelector== CameraSelector.DEFAULT_BACK_CAMERA){
+                //kamera belakang
+                state = 0
+            }
+            else if(cameraSelector==CameraSelector.DEFAULT_FRONT_CAMERA){
+                //kamera depan
+                state = 1
+            }
+        }
+        else{
+            //nampilin twibbon
+            state = -1
+            //simpan twibbon
+            outState.putParcelable("GENERATED_TWIBBON",twibbonViewModel._bitmap.value)
+        }
+        outState.putInt("CAMERA_STATE",state)
+        //simpan data jenis kamera
+        val type = when(cameraSelector){
+            CameraSelector.DEFAULT_BACK_CAMERA->0
+            CameraSelector.DEFAULT_FRONT_CAMERA->1
+            else->0
+        }
+        outState.putInt("CAMERA_TYPE",type)
+    }
+
+    //load state saat kembali
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        if(savedInstanceState!=null){
+            val temp:Bitmap = savedInstanceState?.getParcelable("TWIBBON_DATA")!!
+            if(temp!=null){
+                TWIBBON = temp
+            }
+            //restore data tipe
+            //simpan data jenis kamera
+            cameraSelector = when(savedInstanceState?.getInt("CAMERA_TYPE")){
+                1-> CameraSelector.DEFAULT_FRONT_CAMERA
+                else->CameraSelector.DEFAULT_BACK_CAMERA
+            }
+            //dapetin tipe statenya
+            when(savedInstanceState.getInt("CAMERA_STATE")){
+                -1 ->{
+                    //nampilin twibbon
+                    //retrieve
+                    twibbonViewModel._bitmap.value = savedInstanceState.getParcelable("GENERATED_TWIBBON")
+                    //hide viewer
+                    viewer.visibility = View.GONE
+                    //tampilin gambar
+                    twibbonViewer.setImageBitmap(twibbonViewModel._bitmap.value)
+                    twibbonViewer.visibility = View.VISIBLE
+                    //tampilin tombol retake
+                    retakePhotoButton.visibility = View.VISIBLE
+                    //hide tombol capture
+                    captureButton.visibility = View.GONE
+                    //hide tombol flip
+                    switchCameraButton.visibility = View.GONE
+                }
+                1->{
+                    //kamera depan
+                    //tutup viewer sekarang
+                    twibbonViewer.visibility = View.GONE
+                    //tampilin halaman awal
+                    viewer.visibility = View.VISIBLE
+                    captureButton.visibility = View.VISIBLE
+                    //tutup tombol ini
+                    retakePhotoButton.visibility = View.GONE
+                    //balikin tombol switch camera
+                    switchCameraButton.visibility = View.VISIBLE
+                    //hapus twibbon
+                    twibbonViewer.setImageBitmap(null)
+                    //switch camera
+                    setupCamera()
+                    switchCamera()
+                }
+                else->{
+                    //kamera belakang
+                    //tutup viewer sekarang
+                    twibbonViewer.visibility = View.GONE
+                    //tampilin halaman awal
+                    viewer.visibility = View.VISIBLE
+                    captureButton.visibility = View.VISIBLE
+                    //tutup tombol ini
+                    retakePhotoButton.visibility = View.GONE
+                    //balikin tombol switch camera
+                    switchCameraButton.visibility = View.VISIBLE
+                    //hapus twibbon
+                    twibbonViewer.setImageBitmap(null)
+                    //switch camera
+                    setupCamera()
+                }
+            }
+        }
+
+    }
+    override fun onPause() {
+        super.onPause()
+        // Unbind data
+//        cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+//        cameraProviderFuture.addListener({
+//            val cameraProvider = cameraProviderFuture.get()
+//            cameraProvider.unbindAll()
+//        }, ContextCompat.getMainExecutor(requireContext()))
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //restore state
+//        if (this::viewer.isInitialized) {
+//            cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+//            cameraProviderFuture.addListener({
+//                val cameraProvider = cameraProviderFuture.get()
+//                preview = Preview.Builder()
+//                    .build()
+//                    .also {
+//                        it.setSurfaceProvider(viewer.surfaceProvider)
+//                    }
+//
+//                cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+//
+//                cameraProvider.bindToLifecycle(
+//                    viewLifecycleOwner,
+//                    cameraSelector,
+//                    preview,
+//                    imageCapture
+//                )
+//            }, ContextCompat.getMainExecutor(requireContext()))
+//        }
     }
 }

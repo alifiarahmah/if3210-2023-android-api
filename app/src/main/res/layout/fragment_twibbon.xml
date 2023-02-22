@@ -44,6 +44,8 @@
         android:text="@string/twibbon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:drawableLeft="@drawable/baseline_photo_camera_24"
+        android:drawableTint="@color/white"
         />
     <Button
         android:id="@+id/retakePhoto"
@@ -56,6 +58,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:visibility="gone"
+        android:drawableLeft="@drawable/baseline_photo_camera_24"
+        android:drawableTint="@color/white"
         />
 
     <Button
@@ -68,6 +72,8 @@
         android:text="@string/twibbon_flip"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:drawableLeft="@drawable/baseline_cameraswitch_24"
+        android:drawableTint="@color/white"
         />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
