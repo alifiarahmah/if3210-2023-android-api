@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -26,6 +27,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.majika.R
 import com.example.majika.databinding.FragmentTwibbonBinding
 import com.example.majika.twibbon.ImageManip
 import java.util.concurrent.atomic.AtomicReference
@@ -120,7 +122,9 @@ class TwibbonFragment : Fragment() {
                 Log.v("IMAGE",bitmapImage.byteCount.toString())
                 //bitmap.set(bitmapImage)
                 //rotasi hasilnya dan simpan ke model bitmap
-                twibbonViewModel._bitmap.value = ImageManip.rotateImage(bitmapImage,90.0f);
+                val capturedImage = ImageManip.rotateImage(bitmapImage,90.0f);
+                //apply twibbon
+                twibbonViewModel._bitmap.value = applyTwibbon(capturedImage!!)
                 //tututp gambar
                 image.close()
             }
@@ -131,6 +135,19 @@ class TwibbonFragment : Fragment() {
         })
      //   Log.v("IMAGE",bitmap.toString())
       //  return bitmap.get()
+    }
+
+    private fun applyTwibbon(image:Bitmap):Bitmap{
+        val TWIBBON = BitmapFactory.decodeResource(resources, R.drawable.twibbon)
+        val result:Bitmap = Bitmap.createBitmap(image.width,image.height,image.config)
+        val twibbonCanvas = Canvas(result)
+        //resize twibbon, karena twibbon sangat gede aslinya
+        val Resized_Twibbon = Bitmap.createScaledBitmap(TWIBBON,image.width,image.height,true)
+        //gambar gambar awal
+        twibbonCanvas.drawBitmap(image,0f,0f,null)
+        //gambar twibbon
+        twibbonCanvas.drawBitmap(Resized_Twibbon,0f,0f,null )
+        return result
     }
 
     private fun setupCamera() {
