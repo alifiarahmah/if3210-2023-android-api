@@ -1,4 +1,4 @@
-package com.example.majika.ui.camera
+package com.example.majika.ui.qr
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -22,14 +22,14 @@ class QrFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val twibbonViewModel =
-            ViewModelProvider(this).get(TwibbonViewModel::class.java)
+        val qrViewModel =
+            ViewModelProvider(this).get(QrViewModel::class.java)
 
         _binding = FragmentQrBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val textView: TextView = binding.textCamera
-        twibbonViewModel.text.observe(viewLifecycleOwner) {
+        qrViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root

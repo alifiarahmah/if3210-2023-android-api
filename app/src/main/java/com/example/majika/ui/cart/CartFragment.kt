@@ -9,8 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.majika.R
-import com.example.majika.cart.Cart
 import com.example.majika.cart.CartAdapter
+import com.example.majika.data.entity.Cart
 import com.example.majika.databinding.FragmentCartBinding
 import com.example.majika.ui.payment.PaymentFragment
 
@@ -35,20 +35,10 @@ class CartFragment : Fragment() {
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
-//        val db = Room.databaseBuilder(
-//            requireContext(),
-//            CartDatabase::class.java, "cart-database"
-//        ).allowMainThreadQueries().build()
-
-//        val cartDao = db.cartDao()
-
-//        val cart = cartDao.getAll()
-
-        // dummy data
         val cart : ArrayList<Cart> = ArrayList()
-        cart.add(Cart(1, "Baju", 10000, 1))
-        cart.add(Cart(2, "Celana", 20000, 2))
-        cart.add(Cart(3, "Sepatu", 30000, 3))
+        cart.add(Cart("Baju", 10000, 1))
+        cart.add(Cart("Celana", 20000, 2))
+        cart.add(Cart("Sepatu", 30000, 3))
 
         val adapter = CartAdapter(cart)
 
