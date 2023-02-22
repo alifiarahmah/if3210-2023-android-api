@@ -27,6 +27,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.majika.databinding.FragmentTwibbonBinding
+import com.example.majika.twibbon.ImageManip
 import java.util.concurrent.atomic.AtomicReference
 
 class TwibbonFragment : Fragment() {
@@ -118,7 +119,8 @@ class TwibbonFragment : Fragment() {
                 //set gambar bitmap
                 Log.v("IMAGE",bitmapImage.byteCount.toString())
                 //bitmap.set(bitmapImage)
-                twibbonViewModel._bitmap.value = bitmapImage
+                //rotasi hasilnya dan simpan ke model bitmap
+                twibbonViewModel._bitmap.value = ImageManip.rotateImage(bitmapImage,90.0f);
                 //tututp gambar
                 image.close()
             }
@@ -142,7 +144,14 @@ class TwibbonFragment : Fragment() {
                 it.setSurfaceProvider(viewer.surfaceProvider)
             }
             //inisialisasi image capture
-            imageCapture = ImageCapture.Builder().build()
+          //  val displayOrientation = viewer.display.rotation
+          //  val metadata = ImageCapture.Metadata().apply{
+            //this.rotationDegrees= rotationDegree
+           // }
+            imageCapture = ImageCapture.Builder()
+           //     .setTargetRotation(displayOrientation)
+                .setTargetRotation(requireView().display.rotation)
+                .build()
             //set kamera depan sebagai default
             Log.d("CAMERA","jalan cok")
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
