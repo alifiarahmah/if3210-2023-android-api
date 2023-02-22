@@ -28,10 +28,6 @@ class QrFragment : Fragment() {
         _binding = FragmentQrBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textCamera
-        qrViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
         return root
     }
 

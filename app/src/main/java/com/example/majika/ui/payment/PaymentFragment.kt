@@ -16,6 +16,10 @@ import com.example.majika.databinding.FragmentPaymentBinding
  * An example full-screen fragment that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
+
+/**
+ * WARNING: DEPRECATED
+ */
 class PaymentFragment : Fragment() {
     private val hideHandler = Handler(Looper.myLooper()!!)
 

@@ -65,9 +65,9 @@ dependencies {
     implementation("androidx.room:room-runtime:2.5.0")
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     /**
-     * ZXing Library
+     * QR Code Scanner Library by Yuriy Budiyev
      */
-    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
+    implementation 'com.github.yuriy-budiyev:code-scanner:2.3.2'
 
     annotationProcessor("androidx.room:room-compiler:2.5.0")
     testImplementation 'junit:junit:4.13.2'
