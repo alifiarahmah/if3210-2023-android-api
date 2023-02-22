@@ -6,11 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".ui.qr.QrFragment">
 
-    <!--
+
     <com.journeyapps.barcodescanner.CompoundBarcodeView
         android:id="@+id/qr_scanner"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+
+        android:layout_marginBottom="128dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     -->
 
     <TextView
@@ -28,7 +34,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/twibbonButton"
+        android:id="@+id/qrButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
