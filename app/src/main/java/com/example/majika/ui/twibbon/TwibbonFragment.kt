@@ -1,5 +1,7 @@
 package com.example.majika.ui.twibbon
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -9,9 +11,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
-import androidx.camera.core.*
+import android.widget.Toast
+import androidx.camera.core.Camera
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
+import androidx.camera.core.ImageProxy
+import androidx.camera.core.Preview
+import androidx.camera.core.CameraSelector
 import androidx.camera.lifecycle.ProcessCameraProvider
+//import androidx.camera.core.*
+//import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -19,6 +30,10 @@ import com.example.majika.databinding.FragmentTwibbonBinding
 import java.util.concurrent.atomic.AtomicReference
 
 class TwibbonFragment : Fragment() {
+
+    //izin berkamera
+    private val CAMERA_REQUEST__CODE_PERMISSIONS = 10
+    private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
 
     private var _binding: FragmentTwibbonBinding? = null
 
@@ -29,22 +44,22 @@ class TwibbonFragment : Fragment() {
 //    private lateinit var textView: TextView
     private lateinit var viewer:PreviewView
     private lateinit var captureButton:Button
-    private lateinit var imageCapture:ImageCapture
+    private var imageCapture: ImageCapture? = null
     private lateinit var twibbonViewer:ImageView
-    private var camera:Camera? = null
-
+    private var camera: Camera? = null
+    private lateinit var twibbonViewModel: TwibbonViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val twibbonViewModel =
+        twibbonViewModel =
             ViewModelProvider(this).get(TwibbonViewModel::class.java)
 
+        //observ
         _binding = FragmentTwibbonBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
 //        textView= binding.textCamera
         viewer = binding.surfaceView
         captureButton = binding.twibbonButton
@@ -56,27 +71,40 @@ class TwibbonFragment : Fragment() {
         twibbonViewModel.text.observe(viewLifecycleOwner) {
 //            textView.text = it
         }
+        twibbonViewModel._bitmap.observe(viewLifecycleOwner){
+            viewer.visibility = View.GONE
+            //tampilin gambar
+            twibbonViewer.setImageBitmap(twibbonViewModel._bitmap.value)
+            Log.v("IMAGE",twibbonViewModel._bitmap.value.toString())
+            twibbonViewer.visibility = View.VISIBLE
+        }
         //tunggu previewview selesai diinit
-        viewer.post{
+        //cek izin
+        if(!isPermissionGranted()){
+            ActivityCompat.requestPermissions(requireActivity(),
+                REQUIRED_PERMISSIONS,CAMERA_REQUEST__CODE_PERMISSIONS)
+        }
+        else{
             setupCamera()
         }
         return root
     }
 
     private fun captureImage() {
-        val bitmap = getBitmapFromImage()
-
+      //  val bitmap = getBitmapFromImage()
+      //  Log.v("BITMAP",bitmap.toString())
+        getBitmapFromImage()
         //hide viewer
         viewer.visibility = View.GONE
         //tampilin gambar
-        twibbonViewer.setImageBitmap(bitmap)
+        twibbonViewer.setImageBitmap(twibbonViewModel._bitmap.value)
         twibbonViewer.visibility = View.VISIBLE
     }
 
-    private fun getBitmapFromImage(): Bitmap? {
+    private fun getBitmapFromImage() {
 
-        val bitmap = AtomicReference<Bitmap>()
-        imageCapture.takePicture(ContextCompat.getMainExecutor(requireContext()),
+       // val bitmap = AtomicReference<Bitmap>()
+        imageCapture?.takePicture(ContextCompat.getMainExecutor(requireContext()),
         object:ImageCapture.OnImageCapturedCallback(){
             override fun onCaptureSuccess(image: ImageProxy) {
                 //dapetin bitmap
@@ -88,8 +116,9 @@ class TwibbonFragment : Fragment() {
                 //bikin image
                 val bitmapImage = BitmapFactory.decodeByteArray(bytes,0,bytes.size)
                 //set gambar bitmap
-                bitmap.set(bitmapImage)
-
+                Log.v("IMAGE",bitmapImage.byteCount.toString())
+                //bitmap.set(bitmapImage)
+                twibbonViewModel._bitmap.value = bitmapImage
                 //tututp gambar
                 image.close()
             }
@@ -98,7 +127,8 @@ class TwibbonFragment : Fragment() {
                 Log.e("IMAGE","Error capturing image")
             }
         })
-        return bitmap.get()
+     //   Log.v("IMAGE",bitmap.toString())
+      //  return bitmap.get()
     }
 
     private fun setupCamera() {
@@ -135,5 +165,28 @@ class TwibbonFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+
+    fun isPermissionGranted() = REQUIRED_PERMISSIONS.all{
+        ContextCompat.checkSelfPermission(requireContext(),it)==PackageManager.PERMISSION_GRANTED
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if(requestCode==CAMERA_REQUEST__CODE_PERMISSIONS){
+            if(isPermissionGranted()){
+                setupCamera()
+            }
+            else{
+                Toast.makeText(context,"Izin Membuka Kamera Tidak Diberikan!",Toast.LENGTH_SHORT)
+                    .show()
+                //stop aktivitas
+                requireActivity().finish()
+            }
+        }
     }
 }

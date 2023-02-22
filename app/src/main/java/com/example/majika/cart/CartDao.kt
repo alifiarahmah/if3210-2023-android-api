@@ -1,6 +1,7 @@
 package com.example.majika.cart
 
 import androidx.room.*
+import com.example.majika.data.entity.Cart
 
 @Dao
 interface CartDao {
