@@ -1,6 +1,7 @@
 package com.example.majika.ui.menu
 
 import android.content.Context
+import android.content.res.Configuration
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -346,4 +347,12 @@ class MenuFragment : Fragment(),SensorEventListener {
         recyclerViewState = savedInstanceState?.getParcelable("RECYCLER_VIEW_STATE")
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        //cek orientasi
+        if(newConfig.orientation==Configuration.ORIENTATION_LANDSCAPE){
+            //ke samping
+
+        }
+    }
 }
