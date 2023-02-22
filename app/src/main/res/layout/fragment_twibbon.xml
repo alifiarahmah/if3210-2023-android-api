@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.camera.TwibbonFragment">
+    tools:context=".ui.qr.TwibbonFragment">
 
     <TextView
         android:id="@+id/text_camera"

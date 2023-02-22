@@ -1,4 +1,4 @@
-package com.example.majika.ui.camera
+package com.example.majika.ui.twibbon
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.majika.databinding.FragmentTwibbonBinding
+import com.example.majika.ui.twibbon.TwibbonViewModel
 
 class TwibbonFragment : Fragment() {
 

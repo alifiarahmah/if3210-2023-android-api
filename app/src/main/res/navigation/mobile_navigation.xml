@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_camera"
-        android:name="com.example.majika.ui.camera.TwibbonFragment"
+        android:name="com.example.majika.ui.twibbon.TwibbonFragment"
         android:label="@string/title_twibbon"
         tools:layout="@layout/fragment_branch">
         <action

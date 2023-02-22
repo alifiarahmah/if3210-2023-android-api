@@ -1,4 +1,4 @@
-package com.example.majika.ui.camera
+package com.example.majika.ui.twibbon
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
