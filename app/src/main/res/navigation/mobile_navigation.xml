@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/navigation_camera"
-        android:name="com.example.majika.ui.camera.CameraFragment"
-        android:label="@string/title_camera"
-        tools:layout="@layout/fragment_branch" >
+        android:name="com.example.majika.ui.camera.TwibbonFragment"
+        android:label="@string/title_twibbon"
+        tools:layout="@layout/fragment_branch">
         <action
             android:id="@+id/action_navigation_camera_to_navigation_branch"
             app:destination="@id/navigation_branch" />

@@ -1,20 +1,13 @@
 package com.example.majika
 
 import android.os.Bundle
-import android.util.Log
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.majika.databinding.ActivityMainBinding
-import com.example.majika.ui.branch.BranchFragment
-import com.example.majika.ui.camera.CameraFragment
-import com.example.majika.ui.cart.CartFragment
-import com.example.majika.ui.menu.MenuFragment
 
 class MainActivity : AppCompatActivity() {
 

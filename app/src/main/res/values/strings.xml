@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Majika</string>
-    <string name="title_camera">Kamera</string>
+    <string name="title_twibbon">Twibbon</string>
     <string name="title_branch">Cabang</string>
     <string name="title_menu">Menu</string>
     <string name="title_cart">Keranjang</string>
@@ -13,4 +13,6 @@
     <string name="phone">Telepon</string>
     <string name="jumlah">Jumlah</string>
     <string name="hapus">Hapus</string>
+    <string name="scan_qr">Scan QR</string>
+    <string name="twibbon">Make Twibbon</string>
 </resources>

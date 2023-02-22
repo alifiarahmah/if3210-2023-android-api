@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.majika.databinding.FragmentCameraBinding
+import com.example.majika.databinding.FragmentTwibbonBinding
 
-class CameraFragment : Fragment() {
+class TwibbonFragment : Fragment() {
 
-    private var _binding: FragmentCameraBinding? = null
+    private var _binding: FragmentTwibbonBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -22,18 +22,27 @@ class CameraFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val cameraViewModel =
-            ViewModelProvider(this).get(CameraViewModel::class.java)
+        val twibbonViewModel =
+            ViewModelProvider(this).get(TwibbonViewModel::class.java)
 
-        _binding = FragmentCameraBinding.inflate(inflater, container, false)
+        _binding = FragmentTwibbonBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val textView: TextView = binding.textCamera
-        cameraViewModel.text.observe(viewLifecycleOwner) {
+        twibbonViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root
     }
+
+    /**
+     * TODO: Bikin QR Code Scanner
+     * 1. Bikin intent camera - ZXing
+     * 2. Scan QR Code
+     * 3. Proses, dapat endpointnya
+     * 4. Post ke backend
+     * 5. Balikin jadi teks
+     */
 
     override fun onDestroyView() {
         super.onDestroyView()

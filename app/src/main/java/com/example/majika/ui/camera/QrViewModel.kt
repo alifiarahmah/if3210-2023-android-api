@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class CameraViewModel : ViewModel() {
+class QrViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is camera Fragment"
+        value = "This is twibbon Fragment"
     }
     val text: LiveData<String> = _text
 }
