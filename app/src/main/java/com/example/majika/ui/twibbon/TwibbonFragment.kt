@@ -51,12 +51,17 @@ class TwibbonFragment : Fragment() {
     private lateinit var twibbonViewer:ImageView
     private var camera: Camera? = null
     private lateinit var twibbonViewModel: TwibbonViewModel
+    private lateinit var retakePhotoButton: Button
+
+    private lateinit var TWIBBON:Bitmap;
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        //initiate twibbon
+        TWIBBON = BitmapFactory.decodeResource(resources, R.drawable.twibbon)
         twibbonViewModel =
             ViewModelProvider(this).get(TwibbonViewModel::class.java)
 
@@ -67,6 +72,19 @@ class TwibbonFragment : Fragment() {
         viewer = binding.surfaceView
         captureButton = binding.twibbonButton
         twibbonViewer = binding.imageViewer
+        retakePhotoButton = binding.retakePhoto
+        //tambahin listenernya
+        retakePhotoButton.setOnClickListener {
+            //tutup viewer sekarang
+            twibbonViewer.visibility = View.GONE
+            //tampilin halaman awal
+            viewer.visibility = View.VISIBLE
+            captureButton.visibility = View.VISIBLE
+            //tutup tombol ini
+            retakePhotoButton.visibility = View.GONE
+            //hapus twibbon
+            twibbonViewer.setImageBitmap(null)
+        }
         //tambahin listener
         captureButton.setOnClickListener {
             captureImage()
@@ -102,6 +120,8 @@ class TwibbonFragment : Fragment() {
         //tampilin gambar
         twibbonViewer.setImageBitmap(twibbonViewModel._bitmap.value)
         twibbonViewer.visibility = View.VISIBLE
+        //tampilin tombol retake
+        retakePhotoButton.visibility = View.VISIBLE
     }
 
     private fun getBitmapFromImage() {
@@ -122,8 +142,9 @@ class TwibbonFragment : Fragment() {
                 Log.v("IMAGE",bitmapImage.byteCount.toString())
                 //bitmap.set(bitmapImage)
                 //rotasi hasilnya dan simpan ke model bitmap
-                val capturedImage = ImageManip.rotateImage(bitmapImage,90.0f);
+                val capturedImage = ImageManip.rotateImage(bitmapImage,90.0f)
                 //apply twibbon
+                Log.v("TWIBBON",capturedImage.toString())
                 twibbonViewModel._bitmap.value = applyTwibbon(capturedImage!!)
                 //tututp gambar
                 image.close()
@@ -138,11 +159,18 @@ class TwibbonFragment : Fragment() {
     }
 
     private fun applyTwibbon(image:Bitmap):Bitmap{
-        val TWIBBON = BitmapFactory.decodeResource(resources, R.drawable.twibbon)
         val result:Bitmap = Bitmap.createBitmap(image.width,image.height,image.config)
         val twibbonCanvas = Canvas(result)
         //resize twibbon, karena twibbon sangat gede aslinya
+        Log.v("TWIBBON",image.toString())
+        if(image==null){
+            Log.d("TWIBBON","null")
+        }
+        else{
+            Log.d("TWIBBON","gak null ${image.width} ${image.height} ${TWIBBON}")
+        }
         val Resized_Twibbon = Bitmap.createScaledBitmap(TWIBBON,image.width,image.height,true)
+        Log.d("TWIBBON","ja;am cuy")
         //gambar gambar awal
         twibbonCanvas.drawBitmap(image,0f,0f,null)
         //gambar twibbon
