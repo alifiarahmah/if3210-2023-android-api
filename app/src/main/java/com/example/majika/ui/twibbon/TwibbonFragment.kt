@@ -6,6 +6,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +32,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.majika.R
 import com.example.majika.databinding.FragmentTwibbonBinding
 import com.example.majika.twibbon.ImageManip
+import com.google.common.util.concurrent.ListenableFuture
 import java.util.concurrent.atomic.AtomicReference
 
 class TwibbonFragment : Fragment() {
@@ -52,6 +55,11 @@ class TwibbonFragment : Fragment() {
     private var camera: Camera? = null
     private lateinit var twibbonViewModel: TwibbonViewModel
     private lateinit var retakePhotoButton: Button
+    private  lateinit var switchCameraButton:Button
+    private lateinit var preview:Preview
+    private lateinit var cameraProviderFuture: ListenableFuture<ProcessCameraProvider>
+
+    private lateinit var cameraSelector: CameraSelector
 
     private lateinit var TWIBBON:Bitmap;
 
@@ -72,6 +80,12 @@ class TwibbonFragment : Fragment() {
         viewer = binding.surfaceView
         captureButton = binding.twibbonButton
         twibbonViewer = binding.imageViewer
+        //bikin tombol switch camera
+        switchCameraButton = binding.flipCameraButton
+        //tambahin listenernya
+        switchCameraButton.setOnClickListener {
+            switchCamera()
+        }
         retakePhotoButton = binding.retakePhoto
         //tambahin listenernya
         retakePhotoButton.setOnClickListener {
@@ -82,6 +96,8 @@ class TwibbonFragment : Fragment() {
             captureButton.visibility = View.VISIBLE
             //tutup tombol ini
             retakePhotoButton.visibility = View.GONE
+            //balikin tombol switch camera
+            switchCameraButton.visibility = View.VISIBLE
             //hapus twibbon
             twibbonViewer.setImageBitmap(null)
         }
@@ -111,6 +127,39 @@ class TwibbonFragment : Fragment() {
         return root
     }
 
+    private fun switchCamera() {
+        //update camera selector
+        cameraSelector = if(cameraSelector== CameraSelector.DEFAULT_BACK_CAMERA){
+            CameraSelector.DEFAULT_FRONT_CAMERA
+        }
+        else{
+            CameraSelector.DEFAULT_BACK_CAMERA
+        }
+        Log.d("CAMERA","KEganti gak")
+        //bind ulang
+        //tunggu rebinding
+//        Handler(Looper.getMainLooper()).postDelayed({
+            try {
+                //bind kamera lama kalau ada
+                camera?.let{
+                    preview.setSurfaceProvider(null)
+                }
+                cameraProviderFuture.get().unbindAll()
+                //bind
+                Log.d("CAMERA","jalan kh")
+                //rebind provider
+                camera?.let{
+                    preview.setSurfaceProvider(viewer.surfaceProvider)
+                }
+                camera = cameraProviderFuture.get().bindToLifecycle(viewLifecycleOwner,cameraSelector,preview,imageCapture)
+                Log.d("CAMERA","jalan kh 2")
+
+            } catch(e:Error) {
+                Log.e("CAMERA","Error: $e.localizedMessage")
+            }
+
+    }
+
     private fun captureImage() {
       //  val bitmap = getBitmapFromImage()
       //  Log.v("BITMAP",bitmap.toString())
@@ -122,6 +171,10 @@ class TwibbonFragment : Fragment() {
         twibbonViewer.visibility = View.VISIBLE
         //tampilin tombol retake
         retakePhotoButton.visibility = View.VISIBLE
+        //hide tombol capture
+        captureButton.visibility = View.GONE
+        //hide tombol flip
+        switchCameraButton.visibility = View.GONE
     }
 
     private fun getBitmapFromImage() {
@@ -179,13 +232,13 @@ class TwibbonFragment : Fragment() {
     }
 
     private fun setupCamera() {
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+        cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
         //tambahkan listner ke kamera
         Log.d("CAMERA","apakah jalan?")
         cameraProviderFuture.addListener({
             //inisialisasi preview
             Log.d("CAMERA","jalan cok 11")
-            val preview = Preview.Builder().build().also{
+            preview = Preview.Builder().build().also{
                 it.setSurfaceProvider(viewer.surfaceProvider)
             }
             //inisialisasi image capture
@@ -195,11 +248,11 @@ class TwibbonFragment : Fragment() {
            // }
             imageCapture = ImageCapture.Builder()
            //     .setTargetRotation(displayOrientation)
-                .setTargetRotation(requireView().display.rotation)
+                .setTargetRotation(viewer.display.rotation)
                 .build()
             //set kamera depan sebagai default
             Log.d("CAMERA","jalan cok")
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+            cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
             //binding camera
             try{
                 //bind kamera lama kalau ada
