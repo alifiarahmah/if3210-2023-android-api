@@ -1,4 +1,4 @@
-package com.example.majika.ui.camera
+package com.example.majika.ui.twibbon
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
