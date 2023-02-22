@@ -12,7 +12,7 @@ import com.example.majika.R
 import com.example.majika.cart.CartAdapter
 import com.example.majika.data.entity.Cart
 import com.example.majika.databinding.FragmentCartBinding
-import com.example.majika.ui.payment.PaymentFragment
+import com.example.majika.ui.qr.QrFragment
 
 class CartFragment : Fragment() {
 
@@ -70,11 +70,15 @@ class CartFragment : Fragment() {
 
         // if cart is not empty, show checkout button to payment fragment
         binding.checkoutButton.setOnClickListener {
-            val paymentFragment = PaymentFragment()
+            /**
+             * QR Code scanner
+             */
+            val qrFragment = QrFragment()
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.nav_host_fragment_activity_main, paymentFragment)
+            transaction.replace(R.id.nav_host_fragment_activity_main, qrFragment)
             transaction.addToBackStack(null)
             transaction.commit()
+
         }
 
         return root
