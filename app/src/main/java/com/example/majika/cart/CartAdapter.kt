@@ -8,6 +8,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.majika.R
+import com.example.majika.data.entity.Cart
 
 class CartAdapter(private val list:ArrayList<Cart>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     class ItemHolder(view: View): RecyclerView.ViewHolder(view) {
