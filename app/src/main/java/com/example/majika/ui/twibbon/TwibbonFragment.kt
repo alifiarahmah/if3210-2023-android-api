@@ -96,6 +96,8 @@ class TwibbonFragment : Fragment() {
             captureButton.visibility = View.VISIBLE
             //tutup tombol ini
             retakePhotoButton.visibility = View.GONE
+            //balikin tombol switch camera
+            switchCameraButton.visibility = View.VISIBLE
             //hapus twibbon
             twibbonViewer.setImageBitmap(null)
         }
@@ -171,6 +173,8 @@ class TwibbonFragment : Fragment() {
         retakePhotoButton.visibility = View.VISIBLE
         //hide tombol capture
         captureButton.visibility = View.GONE
+        //hide tombol flip
+        switchCameraButton.visibility = View.GONE
     }
 
     private fun getBitmapFromImage() {
