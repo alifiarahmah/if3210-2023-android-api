@@ -6,6 +6,8 @@ import androidx.room.PrimaryKey
 @Entity
 data class Cart (
     @PrimaryKey val name: String,
-    val price: Int?,
-    var quantity: Int?
+    val price: Int,
+    var quantity: Int
 )
+
+// static database, no need for null safety

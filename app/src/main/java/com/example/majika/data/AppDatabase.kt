@@ -8,17 +8,17 @@ import com.example.majika.data.dao.CartDao
 import com.example.majika.data.entity.Cart
 
 @Database(entities = [Cart::class], version = 1, exportSchema = false)
-abstract class CartDatabase : RoomDatabase() {
+abstract class AppDatabase : RoomDatabase() {
     abstract fun cartDao(): CartDao
 
     companion object {
-        private var INSTANCE: CartDatabase? = null
+        private var INSTANCE: AppDatabase? = null
 
-        fun getInstance(context: Context): CartDatabase? {
+        fun getInstance(context: Context): AppDatabase? {
             if (INSTANCE == null) {
                 INSTANCE = Room.databaseBuilder(
                     context.applicationContext,
-                    CartDatabase::class.java, "carts"
+                    AppDatabase::class.java, "carts"
                 )
                     .fallbackToDestructiveMigration()
                     .allowMainThreadQueries()

@@ -9,7 +9,7 @@ interface CartDao {
     fun getAll(): List<Cart>
 
     @Insert
-    fun insertAll(vararg cartItem: Cart)
+    fun insert(cartItem: Cart)
 
     @Update
     fun update(cartItem: Cart)

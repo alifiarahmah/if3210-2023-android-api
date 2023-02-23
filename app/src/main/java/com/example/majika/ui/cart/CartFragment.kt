@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.majika.R
 import com.example.majika.cart.CartAdapter
+import com.example.majika.data.AppDatabase
 import com.example.majika.data.entity.Cart
 import com.example.majika.databinding.FragmentCartBinding
 import com.example.majika.ui.qr.QrFragment
@@ -36,9 +37,18 @@ class CartFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
         val cart : ArrayList<Cart> = ArrayList()
-        cart.add(Cart("Baju", 10000, 1))
-        cart.add(Cart("Celana", 20000, 2))
-        cart.add(Cart("Sepatu", 30000, 3))
+//        cart.add(Cart("Baju", 10000, 1))
+//        cart.add(Cart("Celana", 20000, 2))
+//        cart.add(Cart("Sepatu", 30000, 3))
+
+        // require context
+        val mContext = requireContext()
+        // create instance of database
+        val db = AppDatabase.getInstance(mContext)
+        val cartDao = db?.cartDao()
+
+        // get all data from cart table
+        cart.addAll(cartDao?.getAll()!!)
 
         val adapter = CartAdapter(cart)
 

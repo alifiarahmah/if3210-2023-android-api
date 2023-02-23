@@ -14,9 +14,11 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.majika.R
+import com.example.majika.data.AppDatabase
 import com.example.majika.data.MenuItem
 import com.example.majika.data.MenuSection
 import com.example.majika.data.UIConstant
+import com.example.majika.data.entity.Cart
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Currency
@@ -73,6 +75,10 @@ class MenuAdapter(private var mContext: Context, public var list:ArrayList<MenuS
             }
         }
         else{
+            // create instance of database
+            val db = AppDatabase.getInstance(mContext)
+            val cartDao = db?.cartDao()
+
             holder as ItemHolder
             holder.apply {
                 var item: MenuItem? = null
@@ -104,6 +110,14 @@ class MenuAdapter(private var mContext: Context, public var list:ArrayList<MenuS
                     if(order<0){
                         order = 0
                     }
+                    // if order is 0, then delete from cart
+                    if(order == 0){
+                        cartDao?.delete(Cart(item.name!!, item.price!!, order))
+                        Log.d("DELETE", "Deleted ${item.name} from cart")
+                    } else {
+                        cartDao?.update(Cart(item.name!!, item.price!!, order))
+                        Log.d("UPDATE", "Updated ${item.name} from cart")
+                    }
                     holder.orderView.text = order.toString()
                     if(order<=0){
                         holder.decreaseButton.isClickable = false
@@ -115,6 +129,14 @@ class MenuAdapter(private var mContext: Context, public var list:ArrayList<MenuS
                     holder.decreaseButton.isClickable = true
                     holder.decreaseButton.setBackgroundColor(Color.rgb(247,225,201))
                     val order =  Integer.parseInt(holder.orderView.text.toString()) + 1
+                    // if order is 1, then add to cart
+                    if(order == 1){
+                        cartDao?.insert(Cart(item.name!!, item.price!!, order))
+                        Log.d("INSERT", "Inserted ${item.name} to cart")
+                    } else {
+                        cartDao?.update(Cart(item.name!!, item.price!!, order))
+                        Log.d("UPDATE", "Updated ${item.name} from cart")
+                    }
                     holder.orderView.text = order.toString()
                 }
             }
