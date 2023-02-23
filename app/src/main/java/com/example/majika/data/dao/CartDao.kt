@@ -1,4 +1,4 @@
-package com.example.majika.cart
+package com.example.majika.data.dao
 
 import androidx.room.*
 import com.example.majika.data.entity.Cart
@@ -12,10 +12,7 @@ interface CartDao {
     fun insertAll(vararg cartItem: Cart)
 
     @Update
-    fun addOne(cartItem: Cart)
-
-    @Update
-    fun removeOne(cartItem: Cart)
+    fun update(cartItem: Cart)
 
     @Delete
     fun delete(cartItem: Cart)

@@ -66,9 +66,10 @@ class QrFragment : Fragment() {
                 TODO("Error Handling")
             }
             binding.qrScannerCam.setOnClickListener {
-                TODO("Rescan Code")
+                qrScanner.startPreview()
             }
         }
+        qrScanner.startPreview()
 
         return root
     }
