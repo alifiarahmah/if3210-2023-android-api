@@ -56,7 +56,7 @@ class CartAdapter(private val list:ArrayList<Cart>) : RecyclerView.Adapter<Recyc
             notifyItemRangeChanged(position, list.size)
         }
         holder.cartDecreaseButton.setOnClickListener {
-            if (item.quantity != 0) {
+            if (item.quantity > 1) {
                 item.quantity = item.quantity.minus(1)
                 holder.cartItemAmount.text = item.quantity.toString()
                 cartDao?.update(item)
