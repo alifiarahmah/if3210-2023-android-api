@@ -14,6 +14,7 @@ import com.example.majika.data.AppDatabase
 import com.example.majika.data.entity.Cart
 import com.example.majika.databinding.FragmentCartBinding
 import com.example.majika.ui.qr.QrFragment
+import com.example.majika.utils.AppUtil
 
 class CartFragment : Fragment() {
 
@@ -50,28 +51,27 @@ class CartFragment : Fragment() {
         // get all data from cart table
         cart.addAll(cartDao?.getAll()!!)
 
-        val adapter = CartAdapter(cart)
-
-        recyclerView.adapter = adapter
-
-        // set total price
+        // initialize total price
         var totalPrice = 0
         for (item in cart) {
-            totalPrice += item.price!! * item.quantity!!
+            totalPrice += item.price * item.quantity
         }
-        binding.totalPrice.text = totalPrice.toString()
+        // format total price with rupiah currency
+        binding.totalPrice.text = AppUtil.toRupiah(totalPrice)
 
-        // if item in cart changed, update total price
+        val adapter = CartAdapter(cart)
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-            override fun onChanged() {
-                super.onChanged()
-                var totalCartPrice = 0
+            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+                // recalculate total price
+                totalPrice = 0
                 for (item in cart) {
-                    totalCartPrice += item.price!! * item.quantity!!
+                    totalPrice += item.price * item.quantity
                 }
-                binding.totalPrice.text = totalCartPrice.toString()
+                binding.totalPrice.text = AppUtil.toRupiah(totalPrice)
             }
         })
+
+        recyclerView.adapter = adapter
 
         // if cart is empty, hide checkout button
         if (cart.isEmpty()) {

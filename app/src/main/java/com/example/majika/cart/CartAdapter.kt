@@ -8,7 +8,9 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.majika.R
+import com.example.majika.data.AppDatabase
 import com.example.majika.data.entity.Cart
+import com.example.majika.utils.AppUtil
 
 class CartAdapter(private val list:ArrayList<Cart>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     class ItemHolder(view: View): RecyclerView.ViewHolder(view) {
@@ -39,21 +41,29 @@ class CartAdapter(private val list:ArrayList<Cart>) : RecyclerView.Adapter<Recyc
         holder as ItemHolder
         val item: Cart = list[position]
 
+        // require context
+        val mContext = holder.itemView.context
+        val db = AppDatabase.getInstance(mContext)
+        val cartDao = db?.cartDao()
+
         holder.cartNameView.text = item.name
-        holder.cartPriceView.text = item.price.toString()
+        holder.cartPriceView.text = AppUtil.toRupiah(item.price)
         holder.cartItemAmount.text = item.quantity.toString()
         holder.cartDeleteButton.setOnClickListener {
             list.removeAt(position)
-            notifyItemRemoved(position) // TODO: move this to a function
+            cartDao?.delete(item)
+            notifyItemRemoved(position)
             notifyItemRangeChanged(position, list.size)
         }
         holder.cartDecreaseButton.setOnClickListener {
-            if (item.quantity != 0) {
+            if (item.quantity > 1) {
                 item.quantity = item.quantity.minus(1)
                 holder.cartItemAmount.text = item.quantity.toString()
+                cartDao?.update(item)
                 notifyItemChanged(position)
             } else {
                 list.removeAt(position)
+                cartDao?.delete(item)
                 notifyItemRemoved(position)
                 notifyItemRangeChanged(position, list.size)
             }
@@ -61,6 +71,7 @@ class CartAdapter(private val list:ArrayList<Cart>) : RecyclerView.Adapter<Recyc
         holder.cartIncreaseButton.setOnClickListener {
             item.quantity = item.quantity.plus(1)
             holder.cartItemAmount.text = item.quantity.toString()
+            cartDao?.update(item)
             notifyItemChanged(position)
         }
     }
