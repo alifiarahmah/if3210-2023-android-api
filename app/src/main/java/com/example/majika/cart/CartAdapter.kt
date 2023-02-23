@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.majika.R
 import com.example.majika.data.AppDatabase
 import com.example.majika.data.entity.Cart
+import com.example.majika.utils.AppUtil
 
 class CartAdapter(private val list:ArrayList<Cart>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     class ItemHolder(view: View): RecyclerView.ViewHolder(view) {
@@ -46,7 +47,7 @@ class CartAdapter(private val list:ArrayList<Cart>) : RecyclerView.Adapter<Recyc
         val cartDao = db?.cartDao()
 
         holder.cartNameView.text = item.name
-        holder.cartPriceView.text = item.price.toString()
+        holder.cartPriceView.text = AppUtil.toRupiah(item.price)
         holder.cartItemAmount.text = item.quantity.toString()
         holder.cartDeleteButton.setOnClickListener {
             list.removeAt(position)

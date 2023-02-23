@@ -16,6 +16,7 @@ import com.example.majika.data.MenuItem
 import com.example.majika.data.MenuSection
 import com.example.majika.data.UIConstant
 import com.example.majika.data.entity.Cart
+import com.example.majika.utils.AppUtil
 import java.text.NumberFormat
 
 class MenuAdapter(private var mContext: Context, public var list:ArrayList<MenuSection>): RecyclerView.Adapter<RecyclerView.ViewHolder>()
@@ -86,10 +87,7 @@ class MenuAdapter(private var mContext: Context, public var list:ArrayList<MenuS
                 Log.v("ITEM",item.toString())
                 holder.textView.text = item.name
                 //format harga
-                val price = NumberFormat.getCurrencyInstance()
-                price.maximumFractionDigits = 2
-                var price_text_pre = price.format(item.price)
-                holder.priceView.text = price_text_pre.replace("$","Rp.")
+                holder.priceView.text = AppUtil.toRupiah(item.price!!)
                 //format pesanan
                 val order = cartDao?.getQuantityByName(item.name!!)
                 holder.soldView.text = buildString {

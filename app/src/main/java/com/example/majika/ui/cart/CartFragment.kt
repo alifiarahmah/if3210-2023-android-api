@@ -14,6 +14,7 @@ import com.example.majika.data.AppDatabase
 import com.example.majika.data.entity.Cart
 import com.example.majika.databinding.FragmentCartBinding
 import com.example.majika.ui.qr.QrFragment
+import com.example.majika.utils.AppUtil
 
 class CartFragment : Fragment() {
 
@@ -55,7 +56,8 @@ class CartFragment : Fragment() {
         for (item in cart) {
             totalPrice += item.price * item.quantity
         }
-        binding.totalPrice.text = totalPrice.toString()
+        // format total price with rupiah currency
+        binding.totalPrice.text = AppUtil.toRupiah(totalPrice)
 
         val adapter = CartAdapter(cart)
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
@@ -65,7 +67,7 @@ class CartFragment : Fragment() {
                 for (item in cart) {
                     totalPrice += item.price * item.quantity
                 }
-                binding.totalPrice.text = totalPrice.toString()
+                binding.totalPrice.text = AppUtil.toRupiah(totalPrice)
             }
         })
 
