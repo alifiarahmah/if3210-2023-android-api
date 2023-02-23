@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -62,12 +64,15 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2'
     implementation 'androidx.core:core-ktx:+'
+    implementation "androidx.room:room-ktx:2.3.0"
     implementation("androidx.room:room-runtime:2.5.0")
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     /**
      * QR Code Scanner Library by Yuriy Budiyev
      */
     implementation 'com.github.yuriy-budiyev:code-scanner:2.3.2'
+
+    kapt 'androidx.room:room-compiler:2.5.0'
 
     annotationProcessor("androidx.room:room-compiler:2.5.0")
     testImplementation 'junit:junit:4.13.2'

@@ -4,10 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.majika.cart.CartDao
+import com.example.majika.data.dao.CartDao
 import com.example.majika.data.entity.Cart
 
-@Database(entities = [Cart::class], version = 1)
+@Database(entities = [Cart::class], version = 1, exportSchema = false)
 abstract class CartDatabase : RoomDatabase() {
     abstract fun cartDao(): CartDao
 
