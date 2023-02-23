@@ -50,28 +50,26 @@ class CartFragment : Fragment() {
         // get all data from cart table
         cart.addAll(cartDao?.getAll()!!)
 
-        val adapter = CartAdapter(cart)
-
-        recyclerView.adapter = adapter
-
-        // set total price
+        // initialize total price
         var totalPrice = 0
         for (item in cart) {
-            totalPrice += item.price!! * item.quantity!!
+            totalPrice += item.price * item.quantity
         }
         binding.totalPrice.text = totalPrice.toString()
 
-        // if item in cart changed, update total price
+        val adapter = CartAdapter(cart)
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-            override fun onChanged() {
-                super.onChanged()
-                var totalCartPrice = 0
+            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+                // recalculate total price
+                totalPrice = 0
                 for (item in cart) {
-                    totalCartPrice += item.price!! * item.quantity!!
+                    totalPrice += item.price * item.quantity
                 }
-                binding.totalPrice.text = totalCartPrice.toString()
+                binding.totalPrice.text = totalPrice.toString()
             }
         })
+
+        recyclerView.adapter = adapter
 
         // if cart is empty, hide checkout button
         if (cart.isEmpty()) {
