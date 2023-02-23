@@ -68,7 +68,7 @@ class TwibbonFragment : Fragment() {
         twibbonViewModel =
             ViewModelProvider(this).get(TwibbonViewModel::class.java)
 
-        //observ
+        //observe
         _binding = FragmentTwibbonBinding.inflate(inflater, container, false)
         val root: View = binding.root
         viewer = binding.surfaceView

@@ -5,4 +5,4 @@ Menu:
 4. landscape mode
 
 Twibbon
-1. masih ngecrash kalau pindah ke halaman lain (NUllPointer ke twibbon) dan masih ngebug
+1. kereset ke default tiap buka
