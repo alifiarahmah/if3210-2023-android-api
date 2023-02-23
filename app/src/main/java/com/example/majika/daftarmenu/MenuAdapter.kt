@@ -7,21 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.majika.R
 import com.example.majika.data.AppDatabase
 import com.example.majika.data.MenuItem
 import com.example.majika.data.MenuSection
 import com.example.majika.data.UIConstant
 import com.example.majika.data.entity.Cart
-import java.text.DecimalFormat
 import java.text.NumberFormat
-import java.util.Currency
 
 class MenuAdapter(private var mContext: Context, public var list:ArrayList<MenuSection>): RecyclerView.Adapter<RecyclerView.ViewHolder>()
 {

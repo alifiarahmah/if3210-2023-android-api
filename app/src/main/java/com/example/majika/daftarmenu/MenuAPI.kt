@@ -1,6 +1,5 @@
 package com.example.majika.daftarmenu
 
-import android.view.Menu
 import com.example.majika.data.MenuList
 import retrofit2.Call
 import retrofit2.http.GET
