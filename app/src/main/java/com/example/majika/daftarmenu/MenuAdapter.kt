@@ -91,7 +91,7 @@ class MenuAdapter(private var mContext: Context, public var list:ArrayList<MenuS
                 var price_text_pre = price.format(item.price)
                 holder.priceView.text = price_text_pre.replace("$","Rp.")
                 //format pesanan
-                val order = 0
+                val order = cartDao?.getQuantityByName(item.name!!)
                 holder.soldView.text = buildString {
                     append(NumberFormat.getNumberInstance().format(item.sold))
                     append(" Terjual")
