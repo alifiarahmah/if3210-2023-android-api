@@ -5,11 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".ui.menu.MenuFragment"
-    android:orientation="vertical">
+    android:orientation="horizontal">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight=".5"
+        android:layout_height="wrap_content"
         app:endIconMode="custom"
         app:endIconDrawable="@android:drawable/ic_menu_search"
         app:boxBackgroundColor="#F2F2F2"
@@ -22,6 +23,11 @@
         </com.google.android.material.textfield.TextInputEditText>
 
     </com.google.android.material.textfield.TextInputLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".5"
+        android:orientation="vertical">
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerListMenu"
         android:layout_width="match_parent"
@@ -29,5 +35,6 @@
         app:layout_constrainedHeight="true"
         android:paddingBottom="?attr/actionBarSize"
  />
+    </LinearLayout>
 
 </LinearLayout>

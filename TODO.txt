@@ -1,8 +1,7 @@
 Menu:
 1. Kalau searching terkadang perlu dua kali tekan baru keupdate
 2. masih ngebug kadang kalau sambil buka sambil nyari
-3. konekin ke ROAM (mesen)
-4. landscape mode
+3. yg di menu gak keupdate kalau di cart nya diupdate
 
 Twibbon
 1. kereset ke default tiap buka

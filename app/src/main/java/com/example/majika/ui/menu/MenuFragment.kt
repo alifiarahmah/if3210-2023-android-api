@@ -72,7 +72,6 @@ class MenuFragment : Fragment(),SensorEventListener {
         setHasOptionsMenu(true)
         val menuViewModel =
             ViewModelProvider(this)[MenuViewModel::class.java]
-
         _binding = FragmentMenuBinding.inflate(inflater, container, false)
         val root: View = binding.root
         recyclerView = binding.recyclerListMenu
