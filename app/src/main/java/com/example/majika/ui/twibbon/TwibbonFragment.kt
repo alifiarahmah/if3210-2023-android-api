@@ -44,21 +44,21 @@ class TwibbonFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-//    private lateinit var textView: TextView
-    private lateinit var viewer:PreviewView
-    private lateinit var captureButton:Button
+    //    private lateinit var textView: TextView
+    private lateinit var viewer: PreviewView
+    private lateinit var captureButton: Button
     private var imageCapture: ImageCapture? = null
-    private lateinit var twibbonViewer:ImageView
+    private lateinit var twibbonViewer: ImageView
     private var camera: Camera? = null
     private lateinit var twibbonViewModel: TwibbonViewModel
     private lateinit var retakePhotoButton: Button
-    private  lateinit var switchCameraButton:Button
-    private lateinit var preview:Preview
+    private lateinit var switchCameraButton: Button
+    private lateinit var preview: Preview
     private lateinit var cameraProviderFuture: ListenableFuture<ProcessCameraProvider>
 
     private lateinit var cameraSelector: CameraSelector
 
-    private lateinit var TWIBBON:Bitmap
+    private lateinit var TWIBBON: Bitmap
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -66,8 +66,8 @@ class TwibbonFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         //initiate twibbon
-        Log.d("TWIBBON",resources.toString())
-            TWIBBON = BitmapFactory.decodeResource(resources, R.drawable.twibbon)
+        Log.d("TWIBBON", resources.toString())
+        TWIBBON = BitmapFactory.decodeResource(resources, R.drawable.twibbon)
         twibbonViewModel =
             ViewModelProvider(this).get(TwibbonViewModel::class.java)
 
@@ -106,20 +106,26 @@ class TwibbonFragment : Fragment() {
         twibbonViewModel.text.observe(viewLifecycleOwner) {
 //            textView.text = it
         }
-        twibbonViewModel._bitmap.observe(viewLifecycleOwner){
-            viewer.visibility = View.GONE
-            //tampilin gambar
+        twibbonViewModel._bitmap.observe(viewLifecycleOwner) {
+//            viewer.visibility = View.GONE
+//            //tampilin gambar
             twibbonViewer.setImageBitmap(twibbonViewModel._bitmap.value)
-            Log.v("IMAGE",twibbonViewModel._bitmap.value.toString())
-            twibbonViewer.visibility = View.VISIBLE
+            Log.v("IMAGE", twibbonViewModel._bitmap.value.toString())
+//            twibbonViewer.visibility = View.VISIBLE
         }
         //tunggu previewview selesai diinit
+        // setting data ulang
+        twibbonViewer.visibility = View.GONE
+        twibbonViewer.setImageBitmap(null)
+        viewer.visibility = View.VISIBLE
+        Log.v("JALAN","jalana gak cok")
         //cek izin
-        if(!isPermissionGranted()){
-            ActivityCompat.requestPermissions(requireActivity(),
-                REQUIRED_PERMISSIONS,CAMERA_REQUEST__CODE_PERMISSIONS)
-        }
-        else{
+        if (!isPermissionGranted()) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                REQUIRED_PERMISSIONS, CAMERA_REQUEST__CODE_PERMISSIONS
+            )
+        } else {
             setupCamera()
         }
         return root
@@ -127,50 +133,44 @@ class TwibbonFragment : Fragment() {
 
     private fun switchCamera() {
         //update camera selector
-        cameraSelector = if(cameraSelector== CameraSelector.DEFAULT_BACK_CAMERA){
+        cameraSelector = if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
             CameraSelector.DEFAULT_FRONT_CAMERA
-        }
-        else{
+        } else {
             CameraSelector.DEFAULT_BACK_CAMERA
         }
-        Log.d("CAMERA","KEganti gak")
+        Log.d("CAMERA", "KEganti gak")
         //dset up viewer
-        preview = Preview.Builder().build().also{
+        preview = Preview.Builder().build().also {
             it.setSurfaceProvider(viewer.surfaceProvider)
         }
 
-        imageCapture = ImageCapture.Builder()
-            .setTargetRotation(viewer.display.rotation)
-            .build()
-        //cek apakah provider ada
-      //  cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+        imageCapture = ImageCapture.Builder().setTargetRotation(viewer.display.rotation).build()
         //bind ulang
-        //tunggu rebinding
-//        Handler(Looper.getMainLooper()).postDelayed({
-            try {
-                //bind kamera lama kalau ada
-                camera?.let{
-                    preview.setSurfaceProvider(null)
-                }
-                cameraProviderFuture.get().unbindAll()
-                //bind
-                Log.d("CAMERA","jalan kh")
-                //rebind provider
-                camera?.let{
-                    preview.setSurfaceProvider(viewer.surfaceProvider)
-                }
-                camera = cameraProviderFuture.get().bindToLifecycle(viewLifecycleOwner,cameraSelector,preview,imageCapture)
-                Log.d("CAMERA","jalan kh 2")
-
-            } catch(e:Error) {
-                Log.e("CAMERA","Error: $e.localizedMessage")
+        try {
+            //bind kamera lama kalau ada
+            camera?.let {
+                preview.setSurfaceProvider(null)
             }
+            cameraProviderFuture.get().unbindAll()
+            //bind
+            Log.d("CAMERA", "jalan kh")
+            //rebind provider
+            camera?.let {
+                preview.setSurfaceProvider(viewer.surfaceProvider)
+            }
+            camera = cameraProviderFuture.get()
+                .bindToLifecycle(viewLifecycleOwner, cameraSelector, preview, imageCapture)
+            Log.d("CAMERA", "jalan kh 2")
+
+        } catch (e: Error) {
+            Log.e("CAMERA", "Error: $e.localizedMessage")
+        }
 
     }
 
     private fun captureImage() {
-      //  val bitmap = getBitmapFromImage()
-      //  Log.v("BITMAP",bitmap.toString())
+        //  val bitmap = getBitmapFromImage()
+        //  Log.v("BITMAP",bitmap.toString())
         getBitmapFromImage()
         //hide viewer
         viewer.visibility = View.GONE
@@ -187,93 +187,84 @@ class TwibbonFragment : Fragment() {
 
     private fun getBitmapFromImage() {
 
-       // val bitmap = AtomicReference<Bitmap>()
+        // val bitmap = AtomicReference<Bitmap>()
         imageCapture?.takePicture(ContextCompat.getMainExecutor(requireContext()),
-        object:ImageCapture.OnImageCapturedCallback(){
-            override fun onCaptureSuccess(image: ImageProxy) {
-                //dapetin bitmap
-                val buffer = image.planes[0].buffer
-                val bytes = ByteArray(buffer.remaining())
-                //pindahin buffer ke byte array
-                buffer.get(bytes)
+            object : ImageCapture.OnImageCapturedCallback() {
+                override fun onCaptureSuccess(image: ImageProxy) {
+                    //dapetin bitmap
+                    val buffer = image.planes[0].buffer
+                    val bytes = ByteArray(buffer.remaining())
+                    //pindahin buffer ke byte array
+                    buffer.get(bytes)
 
-                //bikin image
-                val bitmapImage = BitmapFactory.decodeByteArray(bytes,0,bytes.size)
-                //set gambar bitmap
-                Log.v("IMAGE",bitmapImage.byteCount.toString())
-                //bitmap.set(bitmapImage)
-                //rotasi hasilnya dan simpan ke model bitmap
-                val capturedImage = ImageManip.rotateImage(bitmapImage,90.0f)
-                //apply twibbon
-                Log.v("TWIBBON",capturedImage.toString())
-                twibbonViewModel._bitmap.value = applyTwibbon(capturedImage!!)
-                //tututp gambar
-                image.close()
-            }
+                    //bikin image
+                    val bitmapImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                    //set gambar bitmap
+                    Log.v("IMAGE", bitmapImage.byteCount.toString())
+                    //bitmap.set(bitmapImage)
+                    //rotasi hasilnya dan simpan ke model bitmap
+                    val capturedImage = ImageManip.rotateImage(bitmapImage, 90.0f)
+                    //apply twibbon
+                    Log.v("TWIBBON", capturedImage.toString())
+                    twibbonViewModel._bitmap.value = applyTwibbon(capturedImage!!)
+                    //tututp gambar
+                    image.close()
+                }
 
-            override fun onError(exception: ImageCaptureException) {
-                Log.e("IMAGE","Error capturing image")
-            }
-        })
-     //   Log.v("IMAGE",bitmap.toString())
-      //  return bitmap.get()
+                override fun onError(exception: ImageCaptureException) {
+                    Log.e("IMAGE", "Error capturing image")
+                }
+            })
+        //   Log.v("IMAGE",bitmap.toString())
+        //  return bitmap.get()
     }
 
-    private fun applyTwibbon(image:Bitmap):Bitmap{
-        val result:Bitmap = Bitmap.createBitmap(image.width,image.height,image.config)
+    private fun applyTwibbon(image: Bitmap): Bitmap {
+        val result: Bitmap = Bitmap.createBitmap(image.width, image.height, image.config)
         val twibbonCanvas = Canvas(result)
         //resize twibbon, karena twibbon sangat gede aslinya
-        Log.v("TWIBBON",image.toString())
-//        if(image==null){
-//            Log.d("TWIBBON","null")
-//        }
-//        else{
-//            Log.d("TWIBBON","gak null ${image.width} ${image.height} ${TWIBBON}")
-//        }
-        val Resized_Twibbon = Bitmap.createScaledBitmap(TWIBBON,image.width,image.height,true)
-        Log.d("TWIBBON","ja;am cuy")
+        Log.v("TWIBBON", image.toString())
+        val Resized_Twibbon = Bitmap.createScaledBitmap(TWIBBON, image.width, image.height, true)
+        Log.d("TWIBBON", "ja;am cuy")
         //gambar gambar awal
-        twibbonCanvas.drawBitmap(image,0f,0f,null)
+        twibbonCanvas.drawBitmap(image, 0f, 0f, null)
         //gambar twibbon
-        twibbonCanvas.drawBitmap(Resized_Twibbon,0f,0f,null )
+        twibbonCanvas.drawBitmap(Resized_Twibbon, 0f, 0f, null)
         return result
     }
 
     private fun setupCamera() {
         cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
         //tambahkan listner ke kamera
-        Log.d("CAMERA","apakah jalan?")
+        Log.d("CAMERA", "apakah jalan?")
         cameraProviderFuture.addListener({
             //inisialisasi preview
-            Log.d("CAMERA","jalan cok 11")
-            preview = Preview.Builder().build().also{
+            Log.d("CAMERA", "jalan cok 11")
+            preview = Preview.Builder().build().also {
                 it.setSurfaceProvider(viewer.surfaceProvider)
             }
             //inisialisasi image capture
-          //  val displayOrientation = viewer.display.rotation
-          //  val metadata = ImageCapture.Metadata().apply{
-            //this.rotationDegrees= rotationDegree
-           // }
             imageCapture = ImageCapture.Builder()
-           //     .setTargetRotation(displayOrientation)
+                //     .setTargetRotation(displayOrientation)
                 .setTargetRotation(viewer.display.rotation)
                 .build()
             //set kamera depan sebagai default
-            Log.d("CAMERA","jalan cok")
+            Log.d("CAMERA", "jalan cok")
             cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
             //binding camera
-            try{
+            try {
                 //bind kamera lama kalau ada
-                camera?.let{
+                camera?.let {
                     preview.setSurfaceProvider(null)
                 }
                 cameraProviderFuture.get().unbindAll()
                 //bind
-                camera = cameraProviderFuture.get().bindToLifecycle(viewLifecycleOwner,cameraSelector,preview,imageCapture)
-            }catch(e:Error){
-                Log.e("CAMERA","$e.localizedMessage")
+                camera = cameraProviderFuture.get()
+                    .bindToLifecycle(viewLifecycleOwner, cameraSelector, preview, imageCapture)
+            } catch (e: Error) {
+                Log.e("CAMERA", "$e.localizedMessage")
             }
-        },ContextCompat.getMainExecutor(requireContext()))
+        }, ContextCompat.getMainExecutor(requireContext()))
     }
 
 
@@ -283,8 +274,8 @@ class TwibbonFragment : Fragment() {
     }
 
 
-    fun isPermissionGranted() = REQUIRED_PERMISSIONS.all{
-        ContextCompat.checkSelfPermission(requireContext(),it)==PackageManager.PERMISSION_GRANTED
+    fun isPermissionGranted() = REQUIRED_PERMISSIONS.all {
+        ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onRequestPermissionsResult(
@@ -292,151 +283,137 @@ class TwibbonFragment : Fragment() {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        if(requestCode==CAMERA_REQUEST__CODE_PERMISSIONS){
-            if(isPermissionGranted()){
+        if (requestCode == CAMERA_REQUEST__CODE_PERMISSIONS) {
+            if (isPermissionGranted()) {
                 setupCamera()
-            }
-            else{
-                Toast.makeText(context,"Izin Membuka Kamera Tidak Diberikan!",Toast.LENGTH_SHORT)
+            } else {
+                Toast.makeText(context, "Izin Membuka Kamera Tidak Diberikan!", Toast.LENGTH_SHORT)
                     .show()
                 //stop aktivitas
                 requireActivity().finish()
             }
         }
     }
+
     //simpan state kalau ganti halaman
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putParcelable("TWIBBON_DATA",TWIBBON)
-        var state = 0
-        if(switchCameraButton.visibility==View.VISIBLE){
-            //camera milih
-            if(cameraSelector== CameraSelector.DEFAULT_BACK_CAMERA){
-                //kamera belakang
-                state = 0
-            }
-            else if(cameraSelector==CameraSelector.DEFAULT_FRONT_CAMERA){
-                //kamera depan
-                state = 1
-            }
-        }
-        else{
-            //nampilin twibbon
-            state = -1
-            //simpan twibbon
-            outState.putParcelable("GENERATED_TWIBBON",twibbonViewModel._bitmap.value)
-        }
-        outState.putInt("CAMERA_STATE",state)
-        //simpan data jenis kamera
-        val type = when(cameraSelector){
-            CameraSelector.DEFAULT_BACK_CAMERA->0
-            CameraSelector.DEFAULT_FRONT_CAMERA->1
-            else->0
-        }
-        outState.putInt("CAMERA_TYPE",type)
+//        outState.putParcelable("TWIBBON_DATA", TWIBBON)
+//        var state = 0
+//        if (switchCameraButton.visibility == View.VISIBLE) {
+//            //camera milih
+//            if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
+//                //kamera belakang
+//                state = 0
+//            } else if (cameraSelector == CameraSelector.DEFAULT_FRONT_CAMERA) {
+//                //kamera depan
+//                state = 1
+//            }
+//        } else {
+//            //nampilin twibbon
+//            state = -1
+//            //simpan twibbon
+//            outState.putParcelable("GENERATED_TWIBBON", twibbonViewModel._bitmap.value)
+//        }
+//        outState.putInt("CAMERA_STATE", state)
+//        Log.d("STATE",state.toString())
+//        //simpan data jenis kamera
+//        val type = when (cameraSelector) {
+//            CameraSelector.DEFAULT_BACK_CAMERA -> 0
+//            CameraSelector.DEFAULT_FRONT_CAMERA -> 1
+//            else -> 0
+//        }
+//        outState.putInt("CAMERA_TYPE", type)
     }
 
     //load state saat kembali
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
-        if(savedInstanceState!=null){
-            val temp:Bitmap = savedInstanceState?.getParcelable("TWIBBON_DATA")!!
-            if(temp!=null){
-                TWIBBON = temp
-            }
-            //restore data tipe
-            //simpan data jenis kamera
-            cameraSelector = when(savedInstanceState?.getInt("CAMERA_TYPE")){
-                1-> CameraSelector.DEFAULT_FRONT_CAMERA
-                else->CameraSelector.DEFAULT_BACK_CAMERA
-            }
-            //dapetin tipe statenya
-            when(savedInstanceState.getInt("CAMERA_STATE")){
-                -1 ->{
-                    //nampilin twibbon
-                    //retrieve
-                    twibbonViewModel._bitmap.value = savedInstanceState.getParcelable("GENERATED_TWIBBON")
-                    //hide viewer
-                    viewer.visibility = View.GONE
-                    //tampilin gambar
-                    twibbonViewer.setImageBitmap(twibbonViewModel._bitmap.value)
-                    twibbonViewer.visibility = View.VISIBLE
-                    //tampilin tombol retake
-                    retakePhotoButton.visibility = View.VISIBLE
-                    //hide tombol capture
-                    captureButton.visibility = View.GONE
-                    //hide tombol flip
-                    switchCameraButton.visibility = View.GONE
-                }
-                1->{
-                    //kamera depan
-                    //tutup viewer sekarang
-                    twibbonViewer.visibility = View.GONE
-                    //tampilin halaman awal
-                    viewer.visibility = View.VISIBLE
-                    captureButton.visibility = View.VISIBLE
-                    //tutup tombol ini
-                    retakePhotoButton.visibility = View.GONE
-                    //balikin tombol switch camera
-                    switchCameraButton.visibility = View.VISIBLE
-                    //hapus twibbon
-                    twibbonViewer.setImageBitmap(null)
-                    //switch camera
-                    setupCamera()
-                    switchCamera()
-                }
-                else->{
-                    //kamera belakang
-                    //tutup viewer sekarang
-                    twibbonViewer.visibility = View.GONE
-                    //tampilin halaman awal
-                    viewer.visibility = View.VISIBLE
-                    captureButton.visibility = View.VISIBLE
-                    //tutup tombol ini
-                    retakePhotoButton.visibility = View.GONE
-                    //balikin tombol switch camera
-                    switchCameraButton.visibility = View.VISIBLE
-                    //hapus twibbon
-                    twibbonViewer.setImageBitmap(null)
-                    //switch camera
-                    setupCamera()
-                }
-            }
-        }
+//        if (savedInstanceState != null) {
+//            val temp: Bitmap = savedInstanceState?.getParcelable("TWIBBON_DATA")!!
+//            //restore data tipe
+//            //simpan data jenis kamera
+//            cameraSelector = when (savedInstanceState?.getInt("CAMERA_TYPE")) {
+//                1 -> CameraSelector.DEFAULT_FRONT_CAMERA
+//                else -> CameraSelector.DEFAULT_BACK_CAMERA
+//            }
+//
+//            //dapetin tipe statenya
+//            when (savedInstanceState.getInt("CAMERA_STATE")) {
+//                -1 -> {
+//                    Log.d("CAMERA_TYPE","twibbon")
+//                    //nampilin twibbon
+//                    //retrieve
+//                    twibbonViewModel._bitmap.value =
+//                        savedInstanceState.getParcelable("GENERATED_TWIBBON")
+//                    //hide viewer
+//                    viewer.visibility = View.GONE
+//                    //tampilin gambar
+//                    twibbonViewer.setImageBitmap(twibbonViewModel._bitmap.value)
+//                    twibbonViewer.visibility = View.VISIBLE
+//                    //tampilin tombol retake
+//                    retakePhotoButton.visibility = View.VISIBLE
+//                    //hide tombol capture
+//                    captureButton.visibility = View.GONE
+//                    //hide tombol flip
+//                    switchCameraButton.visibility = View.GONE
+//                }
+//                1 -> {
+//                    //kamera depan
+//                    Log.d("CAMERA_TYPE","kamera depan")
+//                    //tutup viewer sekarang
+//                    twibbonViewer.visibility = View.GONE
+//                    //tampilin halaman awal
+//                    viewer.visibility = View.VISIBLE
+//                    captureButton.visibility = View.VISIBLE
+//                    //tutup tombol ini
+//                    retakePhotoButton.visibility = View.GONE
+//                    //balikin tombol switch camera
+//                    switchCameraButton.visibility = View.VISIBLE
+//                    //hapus twibbon
+//                    twibbonViewer.setImageBitmap(null)
+//                    //switch camera
+//                //    setupCamera()
+//                    if(cameraSelector==CameraSelector.DEFAULT_FRONT_CAMERA){
+//                        Log.v("CAMERA_SELECTOR","front")
+//                    }else{
+//                        Log.v("CAMERA_SELECTOR","belakang")
+//                    }
+//
+//                    switchCamera()
+//                }
+//                else -> {
+//                    //kamera belakang
+//                    Log.d("CAMERA_TYPE","kamera belakang")
+//                    //tutup viewer sekarang
+//                    twibbonViewer.visibility = View.GONE
+//                    //tutup dulu
+//                    twibbonViewer.setImageBitmap(null)
+//                    //tampilin halaman awal
+//                    viewer.visibility = View.VISIBLE
+//                    captureButton.visibility = View.VISIBLE
+//                    //tutup tombol ini
+//                    retakePhotoButton.visibility = View.GONE
+//                    //balikin tombol switch camera
+//                    switchCameraButton.visibility = View.VISIBLE
+//                    //hapus twibbon
+//                    twibbonViewer.setImageBitmap(null)
+//                    //switch camera
+//                //    setupCamera()
+//                }
+//            }
+//        }
 
     }
-    override fun onPause() {
-        super.onPause()
-        // Unbind data
-//        cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
-//        cameraProviderFuture.addListener({
-//            val cameraProvider = cameraProviderFuture.get()
-//            cameraProvider.unbindAll()
-//        }, ContextCompat.getMainExecutor(requireContext()))
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 
     override fun onResume() {
         super.onResume()
-        //restore state
-//        if (this::viewer.isInitialized) {
-//            cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
-//            cameraProviderFuture.addListener({
-//                val cameraProvider = cameraProviderFuture.get()
-//                preview = Preview.Builder()
-//                    .build()
-//                    .also {
-//                        it.setSurfaceProvider(viewer.surfaceProvider)
-//                    }
-//
-//                cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-//
-//                cameraProvider.bindToLifecycle(
-//                    viewLifecycleOwner,
-//                    cameraSelector,
-//                    preview,
-//                    imageCapture
-//                )
-//            }, ContextCompat.getMainExecutor(requireContext()))
+//        if(isPermissionGranted()){
+        //    setupCamera()
 //        }
     }
 }
