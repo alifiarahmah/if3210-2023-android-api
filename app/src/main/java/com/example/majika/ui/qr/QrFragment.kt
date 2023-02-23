@@ -1,9 +1,12 @@
 package com.example.majika.ui.qr
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -16,20 +19,29 @@ import com.budiyev.android.codescanner.DecodeCallback
 import com.budiyev.android.codescanner.ErrorCallback
 import com.budiyev.android.codescanner.ScanMode
 import com.example.majika.R
+import com.example.majika.data.TransactionStatus
 import com.example.majika.databinding.FragmentQrBinding
+import com.example.majika.transaction.TransactionAPI
+import com.example.majika.transaction.TransactionClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class QrFragment : Fragment() {
 
     /**
-     * Companion object
+     * Transaction API
      */
-    companion object {
-        private const val CAMERA_REQ_CODE = 69
-    }
+    private var transactionAPI: TransactionAPI? = null
+    private var status: TransactionStatus? = null
+
     /**
      * Camera Request dan Code Scanner
      */
     private lateinit var qrScanner: CodeScanner
+    private lateinit var qrFrame: FrameLayout
+    private lateinit var qrTextView: TextView
+    private lateinit var qrButton: Button
 
     private var _binding: FragmentQrBinding? = null
 
@@ -49,6 +61,18 @@ class QrFragment : Fragment() {
         val root: View = binding.root
 
         /**
+         * Bind to local variables
+         */
+        qrFrame = binding.qrFrame
+        qrTextView = binding.qrTextStatus
+        qrButton = binding.qrButton
+
+        /**
+         * Set API Service
+         */
+        transactionAPI = TransactionClient.getInstance().create(TransactionAPI::class.java)
+
+        /**
          * Setup Camera Scanner
          */
         qrScanner = CodeScanner(this.requireContext(), binding.qrScannerCam)
@@ -60,12 +84,17 @@ class QrFragment : Fragment() {
             isAutoFocusEnabled = true
             isFlashEnabled = false
             decodeCallback = DecodeCallback {
-                TODO("SCAN QR CODE")
+                Log.d("QR_SCAN", it.text)
+                val transactionId = it.text
+                verifyTransaction(transactionId)
             }
             errorCallback = ErrorCallback {
-                TODO("Error Handling")
+                Log.d("QR_SCAN", it.message!!)
             }
             binding.qrScannerCam.setOnClickListener {
+                qrScanner.startPreview()
+            }
+            binding.qrFrame.setOnClickListener {
                 qrScanner.startPreview()
             }
         }
@@ -82,6 +111,35 @@ class QrFragment : Fragment() {
      * 4. Post ke backend
      * 5. Balikin jadi teks
      */
+
+    /**
+     * Transaction verifier
+     */
+    private fun verifyTransaction(transactionId: String) {
+        val call: Call<TransactionStatus> = transactionAPI!!.verifyTransaction(transactionId)
+        call.enqueue(object: Callback<TransactionStatus> {
+            override fun onResponse(
+                call: Call<TransactionStatus>,
+                response: Response<TransactionStatus>
+            ) {
+                if (response.isSuccessful) {
+                    val transactionStatus: TransactionStatus? = response.body()
+                    Log.d("VERIFY_TRANSACTION", transactionStatus!!.status)
+                    qrTextView.text = "Transaksi Anda ${transactionStatus!!.status}"
+                    qrButton.text = "Scan Again"
+                    qrButton.setOnClickListener {
+                        qrScanner.startPreview()
+                        qrTextView.text = "Scanning..."
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<TransactionStatus>, t: Throwable) {
+                Log.wtf("VERIFY_TRANSACTION", t.message)
+            }
+        }
+        )
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
