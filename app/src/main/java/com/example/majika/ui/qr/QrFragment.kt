@@ -8,13 +8,22 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.budiyev.android.codescanner.*
+import com.budiyev.android.codescanner.AutoFocusMode
+import com.budiyev.android.codescanner.CodeScanner
+import com.budiyev.android.codescanner.CodeScannerView
+import com.budiyev.android.codescanner.DecodeCallback
+import com.budiyev.android.codescanner.ErrorCallback
+import com.budiyev.android.codescanner.ScanMode
+import com.example.majika.R
 import com.example.majika.data.TransactionStatus
 import com.example.majika.databinding.FragmentQrBinding
 import com.example.majika.transaction.TransactionAPI
 import com.example.majika.transaction.TransactionClient
+import com.example.majika.ui.cart.CartFragment
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,6 +43,7 @@ class QrFragment : Fragment() {
     private lateinit var qrFrame: FrameLayout
     private lateinit var qrTextView: TextView
     private lateinit var qrButton: Button
+    private lateinit var qrCamera: CodeScannerView
 
     private var _binding: FragmentQrBinding? = null
 
@@ -41,6 +51,31 @@ class QrFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    /**
+     * Handle back button on create
+     */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val callback:OnBackPressedCallback = requireActivity().onBackPressedDispatcher.addCallback(this) {
+            /**
+             * Handle the back button event
+             */
+            val cartFragment = CartFragment()
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.nav_host_fragment_activity_main, cartFragment)
+            transaction.remove(this@QrFragment)
+            transaction.commit()
+            /*
+            val manager = requireActivity().supportFragmentManager
+            manager.popBackStack()
+
+             */
+        }
+    }
+
+    /**
+     * Inflate the fragment's view
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -85,6 +120,7 @@ class QrFragment : Fragment() {
             }
             binding.qrScannerCam.setOnClickListener {
                 qrScanner.startPreview()
+                qrTextView.text = "Scanning..."
             }
             binding.qrFrame.setOnClickListener {
                 qrScanner.startPreview()
