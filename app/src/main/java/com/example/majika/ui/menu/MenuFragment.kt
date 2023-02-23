@@ -13,6 +13,8 @@ import android.view.*
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -58,6 +60,10 @@ class MenuFragment : Fragment(),SensorEventListener {
     private lateinit var filteredFood:ArrayList<MenuSection>
     private lateinit var filteredDrink:ArrayList<MenuSection>
 
+    //lifedata
+    private val foodLiveData:MutableLiveData<List<com.example.majika.data.MenuItem>> = MutableLiveData<List<com.example.majika.data.MenuItem>>()
+    private val drinkLiveData:MutableLiveData<List<com.example.majika.data.MenuItem>> = MutableLiveData<List<com.example.majika.data.MenuItem>>()
+
     //state
     private var recyclerViewState:Parcelable? = null
 
@@ -68,6 +74,9 @@ class MenuFragment : Fragment(),SensorEventListener {
         savedInstanceState: Bundle?
     ): View {
       //  clearView()
+//        //set defsault value
+        foodLiveData.value = ArrayList<com.example.majika.data.MenuItem>()
+        drinkLiveData.value = ArrayList<com.example.majika.data.MenuItem>()
         //enable action menu (topbar)
         setHasOptionsMenu(true)
         val menuViewModel =
@@ -84,7 +93,7 @@ class MenuFragment : Fragment(),SensorEventListener {
         if(sections.size<2){
             Log.d("SECTIONS","Napa gak 2 jir? ${sections.size}")
             sections.clear()
-            if(foodParent.datas.size>0){
+            if(foodLiveData.value!!.isNotEmpty()){
                 sections.add(foodParent)
             }
             if(drinkParent.datas.size>0){
@@ -95,15 +104,15 @@ class MenuFragment : Fragment(),SensorEventListener {
         adapter = MenuAdapter(container!!.context, sections)
 
         recyclerView.adapter = adapter
-        Log.d("JUMLAH ITEM","sebelum food fetcg: ${foodParent.datas.size}")
+        //Log.d("JUMLAH ITEM","sebelum food fetcg: ${foodLiveData.value!!.size}")
         //fetch data jika kosong
-        if(foodParent.datas.size==0 && drinkParent.datas.size==0){
+        if(foodLiveData.value!!.isEmpty() && drinkLiveData.value!!.isEmpty()){
             //tambahin lagi
-            sections.add(foodParent)
-            sections.add(drinkParent)
+//            sections.add(foodParent)
+//            sections.add(drinkParent)
             fetchData()
         }
-        Log.d("JUMLAH ITEM","sesudah food fetcg: ${foodParent.datas.size}")
+      //  Log.d("JUMLAH ITEM","sesudah food fetcg: ${foodLiveData.value!!.size}")
 
         //set search bar listener
         binding.searchBar.setEndIconOnClickListener {
@@ -118,6 +127,15 @@ class MenuFragment : Fragment(),SensorEventListener {
                 fetchData()
             }
         }
+        //set life data
+        foodLiveData.observe(viewLifecycleOwner, Observer {foods->
+            foodParent.datas.addAll(foods)
+            notifyChange()
+        })
+        drinkLiveData.observe(viewLifecycleOwner, Observer {drinks->
+            drinkParent.datas.addAll(drinks)
+            notifyChange()
+        })
         //setting sensor manager
         sensorManager = activity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager
         return root
@@ -133,7 +151,7 @@ class MenuFragment : Fragment(),SensorEventListener {
 
     private fun searchMenu(query: String) {
         //        nembak ulang
-
+        sections.clear()
         //data makanan
         Log.d("SEARCH",query)
         val call = API_service!!.getMenu()
@@ -145,8 +163,6 @@ class MenuFragment : Fragment(),SensorEventListener {
                     if(adapter!=null){
                         adapter?.clear()
                     }
-                    sections.add(foodParent)
-                    sections.add(drinkParent)
                     //filter data
                     val tempArray = menus.data.filter { menu->menu.name?.lowercase()!!.contains(query.lowercase()) }
                     Log.v("ITEM",tempArray.size.toString())
@@ -154,26 +170,29 @@ class MenuFragment : Fragment(),SensorEventListener {
                     foodParent.datas.clear()
                     drinkParent.datas.clear()
                     //masukin ke tempat yang sesuai
+                    val tempFood = ArrayList<com.example.majika.data.MenuItem>()
+                    val tempDrink = ArrayList<com.example.majika.data.MenuItem>()
                     for(menu in tempArray){
                         if(menu.type==MenuType.Food){
-                            foodParent.datas.add(menu)
+                            tempFood.add(menu)
+                      //      foodParent.datas.add(menu)
                         }
                         else if(menu.type==MenuType.Drink){
-                            drinkParent.datas.add(menu)
+                         //   drinkParent.datas.add(menu)
+                            tempDrink.add(menu)
                         }
                     }
+                    //update lifedata
+                    foodLiveData.value = tempFood
+                    drinkLiveData.value = tempDrink
                     //cek apakah ada
-                    if(foodParent.datas.size==0){
-                        //kalau gak ada gak usah ditampilin
-                        if(sections.contains(foodParent)) {
-                            sections.remove(foodParent)
-                        }
+                    if(foodLiveData.value!!.isNotEmpty()){
+                        //tampilin
+                        sections.add(foodParent)
                     }
-                    if(drinkParent.datas.size==0){
-                        //kalau gak ada gak usah ditampilin
-                        if(sections.contains(drinkParent)) {
-                            sections.remove(drinkParent)
-                        }
+                    if(drinkLiveData.value!!.isNotEmpty()){
+                        ///tampilin
+                        sections.add(drinkParent)
                     }
                     Log.d("JALAN", "harusnya mah dah kefilter makanannya")
                 }
@@ -192,31 +211,27 @@ class MenuFragment : Fragment(),SensorEventListener {
         //bersihkan data dulu
         foodParent.datas.clear()
         drinkParent.datas.clear()
+        sections.clear()
         //data makanan
         val call = API_service!!.getFood()
         call.enqueue(object : Callback<MenuList> {
             override fun onResponse(call: Call<MenuList>, response: Response<MenuList>) {
                 val foods = response.body()
                 if (foods != null) {
-                    Log.d("JUMLAH ITEM","sebelum food fetcg: ${foodParent.datas.size}")
-                    foodParent.datas.addAll(foods.data)
-                    Log.d("JUMLAH ITEM","sesudah food fetcg: ${foodParent.datas.size}")
-                    Log.d("JUMLAH ITEM","dqta: ${foods.data.size }")
+                    Log.d("JUMLAH ITEM", "sebelum food fetcg: ${foodLiveData.value!!.size}")
+                    //   foodParent.datas.addAll(foods.data)
+                    foodLiveData.value = foods.data
+                    Log.d("JUMLAH ITEM", "sesudah food fetcg: ${foodLiveData.value!!.size}")
+                    Log.d("JUMLAH ITEM", "dqta: ${foods.data.size}")
                     Log.d("JALAN", "harusnya mah jalan ieu")
                     //cek apakah ada
-                    if(foodParent.datas.size==0){
+                    if (foodLiveData.value!!.isNotEmpty()) {
                         //kalau gak ada gak usah ditampilin
-                        if(sections.contains(foodParent)) {
-                            sections.remove(foodParent)
-                        }
+                        sections.add(foodParent)
                     }
-                    else if(!sections.contains(foodParent)){
-                        //kalau datanya ada tapi di section kosong
-                        sections.add(0,foodParent)
-                    }
-
                 }
             }
+
 
             override fun onFailure(call: Call<MenuList>, t: Throwable) {
                 Log.e("ERROR", "Request gagal:" + t.localizedMessage)
@@ -229,17 +244,12 @@ class MenuFragment : Fragment(),SensorEventListener {
             override fun onResponse(call: Call<MenuList>, response: Response<MenuList>) {
                 val drinks = response.body()
                 if (drinks != null) {
-                    drinkParent.datas.addAll(drinks.data)
+                //    drinkParent.datas.addAll(drinks.data)
+                    drinkLiveData.value = drinks.data
                     Log.d("JALAN", "Dapetin minuman")
-                    if(drinkParent.datas.size==0){
+                    if(drinkLiveData.value!!.isNotEmpty()){
                         //kalau gak ada gak usah ditampilin
-                        if(sections.contains(drinkParent)) {
-                            sections.remove(drinkParent)
-                        }
-                    }
-                    else if(!sections.contains(drinkParent)){
-                        //kalau datanya ada tapi di section kosong
-                        sections.add(sections.size,drinkParent)
+                        sections.add(drinkParent)
                     }
                 }
             }
@@ -249,6 +259,7 @@ class MenuFragment : Fragment(),SensorEventListener {
             }
 
         })
+        Log.v("SECTIONS","Jumlah segmen : ${sections.size}")
         notifyChange()
 
     }
@@ -331,7 +342,6 @@ class MenuFragment : Fragment(),SensorEventListener {
         textView.text = "$temperature \u2103"
         //set size
         textView.textSize = 20.0f
-    //    Log.d("SENSOR", "keganti cuk harusnya")
     }
 
     //simpan state kalau ganti halaman
@@ -347,12 +357,4 @@ class MenuFragment : Fragment(),SensorEventListener {
         recyclerViewState = savedInstanceState?.getParcelable("RECYCLER_VIEW_STATE")
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        //cek orientasi
-        if(newConfig.orientation==Configuration.ORIENTATION_LANDSCAPE){
-            //ke samping
-
-        }
-    }
 }
