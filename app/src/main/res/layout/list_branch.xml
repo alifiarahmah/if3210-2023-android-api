@@ -15,7 +15,8 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/purple_700">
+            app:cardBackgroundColor="@color/design_default_color_error"
+            app:cardCornerRadius="20dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -59,7 +60,7 @@
                         style="@android:style/Widget.Material.ImageButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@color/purple_500"
+                        android:background="@color/majika_red"
                         android:contentDescription="@string/phone"
                         android:minWidth="48dp"
                         android:minHeight="48dp"
