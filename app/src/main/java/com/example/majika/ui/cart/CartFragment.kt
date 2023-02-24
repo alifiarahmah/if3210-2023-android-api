@@ -1,5 +1,6 @@
 package com.example.majika.ui.cart
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.majika.QrActivity
 import com.example.majika.cart.CartAdapter
 import com.example.majika.data.AppDatabase
 import com.example.majika.data.CartRepositoryImpl
@@ -83,8 +85,8 @@ class CartFragment : Fragment() {
             /**
              * QR Code scanner
              */
-            //val qrIntent = Intent(requireActivity(), QrActivity::class.java)
-            //startActivity(qrIntent)
+            val qrIntent = Intent(requireActivity(), QrActivity::class.java)
+            startActivity(qrIntent)
         }
 
 
