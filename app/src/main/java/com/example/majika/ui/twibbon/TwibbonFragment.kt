@@ -232,7 +232,7 @@ class TwibbonFragment : Fragment() {
         //gambar gambar awal
         twibbonCanvas.drawBitmap(image, 0f, 0f, null)
         //gambar twibbon
-   //     twibbonCanvas.drawBitmap(Resized_Twibbon, 0f, 0f, null)
+        twibbonCanvas.drawBitmap(Resized_Twibbon, 0f, 0f, null)
         return result
     }
 
