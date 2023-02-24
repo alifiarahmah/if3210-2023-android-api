@@ -20,6 +20,7 @@ Aplikasi ini dibuat menggunakan Kotlin dan dibuat untuk memenuhi tugas IF3210 Pe
 5. Google Maps API
 6. QR Code
 7. CameraX
+8. Code Scanner
 
 ## Screenshot aplikasi
 
