@@ -22,6 +22,8 @@ import com.example.majika.transaction.TransactionClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.Timer
+import kotlin.concurrent.timerTask
 
 class QrActivity : AppCompatActivity() {
 
@@ -44,6 +46,7 @@ class QrActivity : AppCompatActivity() {
      */
     private var transactionAPI: TransactionAPI? = null
     private var status: TransactionStatus? = null
+    private var transactionStatus: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -148,6 +151,17 @@ class QrActivity : AppCompatActivity() {
     }
 
     /**
+     * Check transaction status when success, then finish
+     */
+    fun checkTransactionStatus() {
+        if (transactionStatus == "SUCCESS") {
+            Timer().schedule(timerTask {
+                this@QrActivity.finish()
+            }, 5000)
+        }
+    }
+
+    /**
      * Transaction verifier
      */
     private fun verifyTransaction(transactionId: String) {
@@ -160,13 +174,22 @@ class QrActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val transactionStatus: TransactionStatus? = response.body()
                     Log.d("VERIFY_TRANSACTION", transactionStatus!!.status)
-                    qrButton.visibility = View.VISIBLE
-                    qrTextView.text = "Transaksi Anda ${transactionStatus!!.status}"
-                    qrButton.text = "Scan Again"
-                    qrButton.setOnClickListener {
-                        qrScanner.startPreview()
-                        qrTextView.text = "Scanning..."
-                        qrButton.visibility = View.GONE
+                    var status = transactionStatus!!.status
+                    if (status == "SUCCESS") {
+                        qrTextView.text = "Transaksi Anda sukses!"
+                        this@QrActivity.transactionStatus = status
+                        checkTransactionStatus()
+                    }
+                    else /* (status == "FAILED") */ {
+                        qrButton.visibility = View.VISIBLE
+                        qrTextView.text = "Transaksi Anda gagal."
+                        qrButton.text = "Scan Again"
+                        qrButton.setOnClickListener {
+                            qrScanner.startPreview()
+                            qrTextView.text = "Scanning..."
+                            qrButton.visibility = View.GONE
+                        }
+                        this@QrActivity.transactionStatus = status
                     }
                 }
             }
