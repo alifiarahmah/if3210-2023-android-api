@@ -163,7 +163,7 @@ class MenuAdapter(private var mContext: Context, public var list:ArrayList<MenuS
                     list.removeAt(position + 1)
                 }
             }catch(e:java.lang.IndexOutOfBoundsException){
-                Log.e("SECTION","Kelewat batas index cok")
+                Log.e("SECTION","Kelewat batas index")
             }
 
 

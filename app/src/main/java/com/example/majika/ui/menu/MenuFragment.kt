@@ -1,7 +1,6 @@
 package com.example.majika.ui.menu
 
 import android.content.Context
-import android.content.res.Configuration
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -56,9 +55,6 @@ class MenuFragment : Fragment(),SensorEventListener {
     private var mMenu: Menu? = null
 
     private var sections =  ArrayList<MenuSection>()
-    private lateinit var filteredSections:ArrayList<MenuSection>
-    private lateinit var filteredFood:ArrayList<MenuSection>
-    private lateinit var filteredDrink:ArrayList<MenuSection>
 
     //lifedata
     private val foodLiveData:MutableLiveData<List<com.example.majika.data.MenuItem>> = MutableLiveData<List<com.example.majika.data.MenuItem>>()
@@ -75,8 +71,12 @@ class MenuFragment : Fragment(),SensorEventListener {
     ): View {
       //  clearView()
 //        //set defsault value
-        foodLiveData.value = ArrayList<com.example.majika.data.MenuItem>()
-        drinkLiveData.value = ArrayList<com.example.majika.data.MenuItem>()
+        if(foodLiveData.value==null){
+            foodLiveData.value = ArrayList<com.example.majika.data.MenuItem>()
+        }
+        if(drinkLiveData.value==null){
+            drinkLiveData.value = ArrayList<com.example.majika.data.MenuItem>()
+        }
         //enable action menu (topbar)
         setHasOptionsMenu(true)
         val menuViewModel =
@@ -88,15 +88,13 @@ class MenuFragment : Fragment(),SensorEventListener {
         recyclerView.layoutManager = LinearLayoutManager(activity)
         //set api service
         API_service = MenuClient.getInstance().create(MenuAPI::class.java)
-        Log.d("SECTIONS","Kerender ulang gak lu? ${sections.size}")
         //list section
         if(sections.size<2){
-            Log.d("SECTIONS","Napa gak 2 jir? ${sections.size}")
             sections.clear()
             if(foodLiveData.value!!.isNotEmpty()){
                 sections.add(foodParent)
             }
-            if(drinkParent.datas.size>0){
+            if(drinkLiveData.value!!.isNotEmpty()){
                 sections.add(drinkParent)
             }
         }
@@ -104,15 +102,10 @@ class MenuFragment : Fragment(),SensorEventListener {
         adapter = MenuAdapter(container!!.context, sections)
 
         recyclerView.adapter = adapter
-        //Log.d("JUMLAH ITEM","sebelum food fetcg: ${foodLiveData.value!!.size}")
         //fetch data jika kosong
         if(foodLiveData.value!!.isEmpty() && drinkLiveData.value!!.isEmpty()){
-            //tambahin lagi
-//            sections.add(foodParent)
-//            sections.add(drinkParent)
             fetchData()
         }
-      //  Log.d("JUMLAH ITEM","sesudah food fetcg: ${foodLiveData.value!!.size}")
 
         //set search bar listener
         binding.searchBar.setEndIconOnClickListener {
@@ -129,10 +122,16 @@ class MenuFragment : Fragment(),SensorEventListener {
         }
         //set life data
         foodLiveData.observe(viewLifecycleOwner, Observer {foods->
+            if(foodParent.datas.isNotEmpty()){
+                foodParent.datas.clear()
+            }
             foodParent.datas.addAll(foods)
             notifyChange()
         })
         drinkLiveData.observe(viewLifecycleOwner, Observer {drinks->
+            if(drinkParent.datas.isNotEmpty()){
+                drinkParent.datas.clear()
+            }
             drinkParent.datas.addAll(drinks)
             notifyChange()
         })
@@ -141,13 +140,6 @@ class MenuFragment : Fragment(),SensorEventListener {
         return root
     }
 
-    private fun clearView() {
-        foodParent.datas.clear()
-        drinkParent.datas.clear()
-        if(adapter!=null) {
-            adapter?.clear()
-        }
-    }
 
     private fun searchMenu(query: String) {
         //        nembak ulang
@@ -194,7 +186,6 @@ class MenuFragment : Fragment(),SensorEventListener {
                         ///tampilin
                         sections.add(drinkParent)
                     }
-                    Log.d("JALAN", "harusnya mah dah kefilter makanannya")
                 }
             }
 
@@ -207,7 +198,7 @@ class MenuFragment : Fragment(),SensorEventListener {
     }
 
     private fun fetchData() {
-        Log.d("FETCG","NGEFETCH MANING")
+        Log.d("FETCH","NGEFETCH MANING")
         //bersihkan data dulu
         foodParent.datas.clear()
         drinkParent.datas.clear()
@@ -218,11 +209,7 @@ class MenuFragment : Fragment(),SensorEventListener {
             override fun onResponse(call: Call<MenuList>, response: Response<MenuList>) {
                 val foods = response.body()
                 if (foods != null) {
-                    Log.d("JUMLAH ITEM", "sebelum food fetcg: ${foodLiveData.value!!.size}")
-                    //   foodParent.datas.addAll(foods.data)
                     foodLiveData.value = foods.data
-                    Log.d("JUMLAH ITEM", "sesudah food fetcg: ${foodLiveData.value!!.size}")
-                    Log.d("JUMLAH ITEM", "dqta: ${foods.data.size}")
                     Log.d("JALAN", "harusnya mah jalan ieu")
                     //cek apakah ada
                     if (foodLiveData.value!!.isNotEmpty()) {
@@ -244,7 +231,6 @@ class MenuFragment : Fragment(),SensorEventListener {
             override fun onResponse(call: Call<MenuList>, response: Response<MenuList>) {
                 val drinks = response.body()
                 if (drinks != null) {
-                //    drinkParent.datas.addAll(drinks.data)
                     drinkLiveData.value = drinks.data
                     Log.d("JALAN", "Dapetin minuman")
                     if(drinkLiveData.value!!.isNotEmpty()){
@@ -307,7 +293,6 @@ class MenuFragment : Fragment(),SensorEventListener {
         //nilainya berubah
         try {
             temperature = event!!.values[0]
-         //   Log.d("SENSOR", "Temparature: $temperature")
             try {
                 //reset temperature di top bar
                 activity?.invalidateOptionsMenu()
@@ -327,7 +312,6 @@ class MenuFragment : Fragment(),SensorEventListener {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main_menu, menu)
-    //    Log.d("SENSOR", "kebentuk harusnya")
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
