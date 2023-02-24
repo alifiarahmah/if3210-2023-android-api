@@ -23,6 +23,7 @@ import com.example.majika.data.entity.Cart
 import com.example.majika.databinding.FragmentCartBinding
 import com.example.majika.ui.menu.MenuFragment
 import com.example.majika.utils.AppUtil
+import com.google.android.material.bottomappbar.BottomAppBar
 
 class CartFragment : Fragment() {
 
@@ -90,10 +91,11 @@ class CartFragment : Fragment() {
             if (result.resultCode == 0) {
                 Log.d("DEBUG", result.resultCode.toString())
                 // TODO("rEPLACE FRAGMENT TO MENU")
-                var fm = requireActivity().supportFragmentManager
-                fm.popBackStack()
+                //var fm = requireActivity().supportFragmentManager
+                //fm.popBackStack()
                 // fm.beginTransaction().replace(R.id.nav_host_fragment_activity_main, MenuFragment()).commit()
-
+                val menu = requireActivity().findViewById<View>(R.id.navigation_menu)
+                menu.performClick()
             }
         }
 
