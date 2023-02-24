@@ -10,14 +10,18 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.majika.MainActivity
 import com.example.majika.QrActivity
+import com.example.majika.R
 import com.example.majika.cart.CartAdapter
 import com.example.majika.data.AppDatabase
 import com.example.majika.data.CartRepositoryImpl
 import com.example.majika.data.entity.Cart
 import com.example.majika.databinding.FragmentCartBinding
+import com.example.majika.ui.menu.MenuFragment
 import com.example.majika.utils.AppUtil
 
 class CartFragment : Fragment() {
@@ -85,7 +89,11 @@ class CartFragment : Fragment() {
             result ->
             if (result.resultCode == 0) {
                 Log.d("DEBUG", result.resultCode.toString())
-                TODO("rEPLACE FRAGMENT TO MENU")
+                // TODO("rEPLACE FRAGMENT TO MENU")
+                var fm = requireActivity().supportFragmentManager
+                fm.popBackStack()
+                // fm.beginTransaction().replace(R.id.nav_host_fragment_activity_main, MenuFragment()).commit()
+
             }
         }
 
