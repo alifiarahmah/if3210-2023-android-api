@@ -57,10 +57,22 @@ class CartAdapter(private val list:ArrayList<Cart>) : RecyclerView.Adapter<Recyc
             notifyItemRangeChanged(position, list.size)
         }
         holder.cartDecreaseButton.setOnClickListener {
-            repo.decreaseQuantity(item)
+            if (item.quantity > 1){
+                repo.decreaseQuantity(item)
+                notifyItemChanged(position)
+                notifyItemRangeChanged(position, list.size)
+            } else {
+                list.removeAt(position)
+                repo.removeFromCart(item)
+                notifyItemRemoved(position)
+                notifyItemRangeChanged(position, list.size)
+            }
         }
         holder.cartIncreaseButton.setOnClickListener {
             repo.increaseQuantity(item)
+            holder.cartItemAmount.text = item.quantity.toString()
+            notifyItemChanged(position)
+            notifyItemRangeChanged(position, list.size)
         }
     }
 
