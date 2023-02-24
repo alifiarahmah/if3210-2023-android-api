@@ -2,6 +2,7 @@ package com.example.majika.ui.twibbon
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -42,7 +43,6 @@ class TwibbonFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    //    private lateinit var textView: TextView
     private lateinit var viewer: PreviewView
     private lateinit var captureButton: Button
     private var imageCapture: ImageCapture? = null
@@ -183,7 +183,34 @@ class TwibbonFragment : Fragment() {
                     //set gambar bitmap
                     Log.v("IMAGE", bitmapImage.byteCount.toString())
                     //rotasi hasilnya dan simpan ke model bitmap
-                    val capturedImage = ImageManip.rotateImage(bitmapImage, 90.0f)
+            //        val capturedImage = bitmapImage
+                    //cek tipe dan orientasi
+                    val orientation = resources.configuration.orientation
+                    var capturedImage:Bitmap? = null
+                    if(cameraSelector==CameraSelector.DEFAULT_BACK_CAMERA){
+                        //kamera belakang
+                        //untuk orintasi potrait
+                        if(orientation==Configuration.ORIENTATION_PORTRAIT){
+                            capturedImage = ImageManip.rotateImage(bitmapImage, 90.0f)
+                        }
+                        else{
+                            //landscape
+                            capturedImage = ImageManip.rotateImage(bitmapImage, 180.0f)
+                        }
+                    }
+                    else{
+                        //kamera depan
+                        //untuk orintasi potrait
+                        if(orientation==Configuration.ORIENTATION_PORTRAIT){
+                            capturedImage = ImageManip.rotateImage(bitmapImage, 90.0f)
+                            capturedImage = ImageManip.scaleImage(capturedImage!!,-1f,1f)
+                        }
+                        else{
+                            //landscape
+                            capturedImage = ImageManip.rotateImage(bitmapImage, 180.0f)
+                            capturedImage = ImageManip.scaleImage(capturedImage!!,1f,-1f)
+                        }
+                    }
                     //apply twibbon
                     Log.v("TWIBBON", capturedImage.toString())
                     twibbonViewModel._bitmap.value = applyTwibbon(capturedImage!!)
@@ -205,7 +232,7 @@ class TwibbonFragment : Fragment() {
         //gambar gambar awal
         twibbonCanvas.drawBitmap(image, 0f, 0f, null)
         //gambar twibbon
-        twibbonCanvas.drawBitmap(Resized_Twibbon, 0f, 0f, null)
+   //     twibbonCanvas.drawBitmap(Resized_Twibbon, 0f, 0f, null)
         return result
     }
 

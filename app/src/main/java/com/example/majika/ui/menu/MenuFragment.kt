@@ -347,8 +347,10 @@ class MenuFragment : Fragment(),SensorEventListener {
     //simpan state kalau ganti halaman
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putParcelable("RECYCLER_VIEW_STATE",recyclerView.layoutManager?.onSaveInstanceState())
-        //update warna
+        if(recyclerView.layoutManager!=null){
+            outState.putParcelable("RECYCLER_VIEW_STATE",recyclerView.layoutManager?.onSaveInstanceState())
+            //update warna
+        }
     }
 
     //load state saat kembali
