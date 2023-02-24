@@ -1,11 +1,10 @@
 package com.example.majika.data.entity
 
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 
-@Entity
+@Entity(primaryKeys = ["name", "price"])
 data class Cart (
-    @PrimaryKey val name: String,
+    val name: String,
     val price: Int,
     var quantity: Int
 )

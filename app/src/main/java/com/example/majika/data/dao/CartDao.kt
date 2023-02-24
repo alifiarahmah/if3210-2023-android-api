@@ -11,6 +11,9 @@ interface CartDao {
     @Query("SELECT * FROM cart WHERE name IN (:names)")
     fun loadAllByIds(names: IntArray): List<Cart>
 
+    @Query("SELECT * FROM cart WHERE name = :name AND type = :type AND price = :price LIMIT 1")
+    fun getByAttr(name: String, type: String, price: Int): Cart
+
     // get cart item quantity by name
     @Query("SELECT quantity FROM cart WHERE name = :name")
     fun getQuantityByName(name: String): Int
@@ -23,4 +26,7 @@ interface CartDao {
 
     @Delete
     fun delete(cartItem: Cart)
+
+    @Delete
+    fun deleteAll(cartItems: List<Cart>)
 }

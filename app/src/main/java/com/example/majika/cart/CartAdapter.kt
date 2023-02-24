@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.majika.R
 import com.example.majika.data.AppDatabase
+import com.example.majika.data.CartRepositoryImpl
 import com.example.majika.data.entity.Cart
 import com.example.majika.utils.AppUtil
 
@@ -44,35 +45,22 @@ class CartAdapter(private val list:ArrayList<Cart>) : RecyclerView.Adapter<Recyc
         // require context
         val mContext = holder.itemView.context
         val db = AppDatabase.getInstance(mContext)
-        val cartDao = db?.cartDao()
+        val repo = CartRepositoryImpl(db!!.cartDao())
 
         holder.cartNameView.text = item.name
         holder.cartPriceView.text = AppUtil.toRupiah(item.price)
         holder.cartItemAmount.text = item.quantity.toString()
         holder.cartDeleteButton.setOnClickListener {
             list.removeAt(position)
-            cartDao?.delete(item)
+            repo.removeFromCart(item)
             notifyItemRemoved(position)
             notifyItemRangeChanged(position, list.size)
         }
         holder.cartDecreaseButton.setOnClickListener {
-            if (item.quantity > 1) {
-                item.quantity = item.quantity.minus(1)
-                holder.cartItemAmount.text = item.quantity.toString()
-                cartDao?.update(item)
-                notifyItemChanged(position)
-            } else {
-                list.removeAt(position)
-                cartDao?.delete(item)
-                notifyItemRemoved(position)
-                notifyItemRangeChanged(position, list.size)
-            }
+            repo.decreaseQuantity(item)
         }
         holder.cartIncreaseButton.setOnClickListener {
-            item.quantity = item.quantity.plus(1)
-            holder.cartItemAmount.text = item.quantity.toString()
-            cartDao?.update(item)
-            notifyItemChanged(position)
+            repo.increaseQuantity(item)
         }
     }
 

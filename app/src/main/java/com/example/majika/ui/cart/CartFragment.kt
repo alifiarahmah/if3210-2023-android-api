@@ -2,7 +2,6 @@ package com.example.majika.ui.cart
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.majika.R
 import com.example.majika.cart.CartAdapter
 import com.example.majika.data.AppDatabase
+import com.example.majika.data.CartRepositoryImpl
 import com.example.majika.data.entity.Cart
 import com.example.majika.databinding.FragmentCartBinding
 import com.example.majika.ui.qr.QrActivity
@@ -40,18 +39,17 @@ class CartFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
         val cart : ArrayList<Cart> = ArrayList()
-//        cart.add(Cart("Baju", 10000, 1))
-//        cart.add(Cart("Celana", 20000, 2))
-//        cart.add(Cart("Sepatu", 30000, 3))
 
         // require context
         val mContext = requireContext()
         // create instance of database
         val db = AppDatabase.getInstance(mContext)
-        val cartDao = db?.cartDao()
+        val repo = CartRepositoryImpl(db!!.cartDao())
 
         // get all data from cart table
-        cart.addAll(cartDao?.getAll()!!)
+        repo.getCart().forEach {
+            cart.add(it)
+        }
 
         // initialize total price
         var totalPrice = 0

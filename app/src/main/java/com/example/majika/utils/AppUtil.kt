@@ -10,5 +10,9 @@ class AppUtil {
             val numberFormat = NumberFormat.getCurrencyInstance(localeID)
             return numberFormat.format(number).toString()
         }
+
+        fun formatNumber(number: Int): String {
+            return NumberFormat.getNumberInstance().format(number)
+        }
     }
 }
