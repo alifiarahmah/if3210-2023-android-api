@@ -1,16 +1,18 @@
 # IF3210-2023-Android-API
 
 ## Anggota
+
 1. 13520086 - Fawwaz Anugrah WD
 2. 13520098 - Andika Naufal Hilmy
 3. 13520122 - Alifia Rahmah
 
-## Deskripsi aplikasi.
-Majika adalah aplikasi simulasi pemesanan makanan dan minuman secara daring berbasis Android.
-Aplikasi ini dibuat menggunakan Kotlin dan dibuat untuk memenuhi tugas 
-IF3210 Pengembangan Aplikasi pada Platform Khusus.
+## Deskripsi aplikasi
 
-## Library yang digunakan.
+Majika adalah aplikasi simulasi pemesanan makanan dan minuman secara daring berbasis Android.
+Aplikasi ini dibuat menggunakan Kotlin dan dibuat untuk memenuhi tugas IF3210 Pengembangan Aplikasi pada Platform Khusus.
+
+## Library yang digunakan
+
 1. Retrofit
 2. AndroidX
 3. Coroutines
@@ -19,24 +21,29 @@ IF3210 Pengembangan Aplikasi pada Platform Khusus.
 6. QR Code
 7. CameraX
 
-## Screenshot aplikasi (dimasukkan dalam folder screenshot).
+## Screenshot aplikasi
 
 ### Kamera
+
 ![Kamera](screenshot/camera_1.jpg)
 ![Kamera](screenshot/camera_2.jpg)
 
 ### Cabang
+
 ![Cabang](screenshot/branch.jpg)
 
 ### Menu
+
 ![Menu](screenshot/menu_1.jpg)
 ![Menu](screenshot/menu_2.jpg)
 ![Menu](screenshot/menu_3.jpg)
+![Menu](screenshot/menu_4.jpg)
 
 ### Keranjang
+
 ![Keranjang](screenshot/cart.jpg)
 
-## Pembagian kerja anggota kelompok.
+## Pembagian kerja anggota kelompok
 
 1. 13520086 - Fawwaz Anugrah WD
     - Camera
@@ -50,7 +57,7 @@ IF3210 Pengembangan Aplikasi pada Platform Khusus.
    - Cabang
    - Keranjang
 
-## Jumlah jam persiapan dan pengerjaan untuk masing-masing anggota.
+## Jumlah jam persiapan dan pengerjaan untuk masing-masing anggota
 
 1. 13520086 - Fawwaz Anugrah WD
     - Camera: 4 jam
