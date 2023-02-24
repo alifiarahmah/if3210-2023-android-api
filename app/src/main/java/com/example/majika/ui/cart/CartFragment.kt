@@ -87,8 +87,8 @@ class CartFragment : Fragment() {
             /**
              * QR Code scanner
              */
-            val qrIntent = Intent(requireActivity(), QrActivity::class.java)
-            startActivity(qrIntent)
+            //val qrIntent = Intent(requireActivity(), QrActivity::class.java)
+            //startActivity(qrIntent)
         }
 
 
