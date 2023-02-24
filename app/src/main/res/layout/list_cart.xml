@@ -60,6 +60,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:backgroundTint="@color/majika_beige"
                         android:contentDescription="@string/hapus"
                         android:padding="48dp"
                         app:srcCompat="@drawable/baseline_delete_24" />
@@ -92,10 +93,13 @@
 
                         <Button
                             android:id="@+id/cart_decrease"
-                            android:layout_width="48dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/purple_200"
-                            android:text="@string/minus_sign" />
+                            style="@style/Widget.MaterialComponents.Button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@color/majika_beige"
+                            android:text="@string/minus_sign"
+                            android:textColor="@color/majika_red"
+                            android:textSize="20sp" />
 
                         <TextView
                             android:id="@+id/item_amount"
@@ -111,10 +115,13 @@
 
                         <Button
                             android:id="@+id/cart_increase"
-                            android:layout_width="48dp"
+                            style="@style/Widget.MaterialComponents.Button"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@color/purple_200"
-                            android:text="@string/plus_sign" />
+                            android:backgroundTint="@color/majika_beige"
+                            android:text="@string/plus_sign"
+                            android:textColor="@color/majika_red"
+                            android:textSize="20sp" />
 
                     </LinearLayout>
 
