@@ -43,6 +43,12 @@ Aplikasi ini dibuat menggunakan Kotlin dan dibuat untuk memenuhi tugas IF3210 Pe
 
 ![Keranjang](screenshot/cart.jpg)
 
+### QR Code Scanner
+![QR Code Scanner](./screenshot/qrscanner_scanning.jpg)
+![QR Code Scanner](./screenshot/qrscanner_success.jpg)
+![QR Code Scanner](./screenshot/qrscanner_failure.jpg)
+![QR Code Scanner](./screenshot/qrscanner_landscape.jpg)
+
 ## Pembagian kerja anggota kelompok
 
 1. 13520086 - Fawwaz Anugrah WD
@@ -65,7 +71,7 @@ Aplikasi ini dibuat menggunakan Kotlin dan dibuat untuk memenuhi tugas IF3210 Pe
     - Menu: 10 jam
     - API Retrofit: 2 jam
 2. 13520098 - Andika Naufal Hilmy
-    - QR
+    - QR: 12 jam
 3. 13520122 - Alifia Rahmah
     - Navbar & Bottom Navigation: 1 jam
     - Cabang: 2 jam
