@@ -1,6 +1,10 @@
 package com.example.majika.ui.qr
 
+import android.Manifest
+import android.app.Activity
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -8,8 +12,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.budiyev.android.codescanner.AutoFocusMode
@@ -20,7 +26,6 @@ import com.budiyev.android.codescanner.ErrorCallback
 import com.budiyev.android.codescanner.ScanMode
 import com.example.majika.R
 import com.example.majika.data.TransactionStatus
-import com.example.majika.databinding.FragmentQrBinding
 import com.example.majika.transaction.TransactionAPI
 import com.example.majika.transaction.TransactionClient
 import com.example.majika.ui.cart.CartFragment
@@ -28,7 +33,56 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class QrFragment : Fragment() {
+class QrActivity : Activity() {
+
+    private lateinit var qrScanner: CodeScanner
+    private lateinit var qrTextView: TextView
+
+    private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
+    private val CAMERA_REQ_CODE = 10
+
+    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+        super.onCreate(savedInstanceState, persistentState)
+        setContentView(R.layout.activity_qr)
+    }
+
+    /**
+     * Permission checker
+     * @return boolean
+     */
+    private fun isPermissionGranted() =
+        REQUIRED_PERMISSIONS.all {
+            ContextCompat.checkSelfPermission(applicationContext, it) == PackageManager.PERMISSION_GRANTED
+        }
+
+    /**
+     * Override Request Permissions Result
+     */
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == CAMERA_REQ_CODE) {
+            if (isPermissionGranted()) {
+                TODO("Setup Camera")
+            }
+            else {
+                Toast.makeText(applicationContext, "Izin membuka kamera tidak diperbolehkan!", Toast.LENGTH_SHORT)
+                    .show()
+                /**
+                 * Stop this activity
+                 */
+                this.finish()
+            }
+        }
+    }
+
+
+    /**
+     * The code below is obsolete
+     */
+    /*
 
     /**
      * Transaction API
@@ -54,6 +108,7 @@ class QrFragment : Fragment() {
     /**
      * Handle back button on create
      */
+    /*
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val callback:OnBackPressedCallback = requireActivity().onBackPressedDispatcher.addCallback(this) {
@@ -63,7 +118,7 @@ class QrFragment : Fragment() {
             val cartFragment = CartFragment()
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.nav_host_fragment_activity_main, cartFragment)
-            transaction.remove(this@QrFragment)
+            transaction.remove(this@QrActivity)
             transaction.commit()
             /*
             val manager = requireActivity().supportFragmentManager
@@ -72,6 +127,8 @@ class QrFragment : Fragment() {
              */
         }
     }
+
+     */
 
     /**
      * Inflate the fragment's view
@@ -169,8 +226,13 @@ class QrFragment : Fragment() {
         )
     }
 
+    /*
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
+     */
+
+     */
 }
