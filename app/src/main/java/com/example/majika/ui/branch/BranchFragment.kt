@@ -27,7 +27,7 @@ class BranchFragment : Fragment() {
     private val binding get() = _binding!!
 
     // API client
-    private var API_service: BranchAPI? = null
+    private var apiService: BranchAPI? = null
     private var branches: ArrayList<BranchItem> = ArrayList()
 
     private var adapter: BranchAdapter? = null
@@ -46,7 +46,7 @@ class BranchFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
         // set api service
-        API_service = BranchClient.getInstance().create(BranchAPI::class.java)
+        apiService = BranchClient.getInstance().create(BranchAPI::class.java)
 
         adapter = BranchAdapter(branches)
         recyclerView.adapter = adapter
@@ -57,15 +57,13 @@ class BranchFragment : Fragment() {
     }
 
     private fun fetchData() {
-        val call: Call<BranchList> = API_service!!.getBranches()
+        val call: Call<BranchList> = apiService!!.getBranches()
         call.enqueue(object : Callback<BranchList> {
             override fun onResponse(call: Call<BranchList>, response: Response<BranchList>) {
                 if (response.isSuccessful) {
                     val branchList: BranchList? = response.body()
                     if (branchList != null) {
                         branches.addAll(branchList.data)
-                        // TODO: sort all branches by distance to user's GPS location
-                        adapter!!.notifyDataSetChanged()
                     }
                 }
             }

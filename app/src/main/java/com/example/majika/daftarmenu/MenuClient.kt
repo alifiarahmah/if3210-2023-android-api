@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 
 object MenuClient {
-    private val BASE_URL:String = BuildConfig.BASE_URL //localhost
+    private const val BASE_URL:String = BuildConfig.BASE_URL //localhost
     private var mRetrofit: Retrofit? = null
 
     fun getInstance():Retrofit{
