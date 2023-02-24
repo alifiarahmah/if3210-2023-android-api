@@ -39,10 +39,10 @@ IF3210 Pengembangan Aplikasi pada Platform Khusus.
 ## Pembagian kerja anggota kelompok.
 
 1. 13520086 - Fawwaz Anugrah WD
-   - Camera: 4 jam
-   - Twibbon: 5 jam
-   - Menu: 10 jam
-   - API Retrofit: 2 jam
+    - Camera
+    - Twibbon
+    - Menu
+    - Implementasi API Retrofit
 2. 13520098 - Andika Naufal Hilmy
    - QR
 3. 13520122 - Alifia Rahmah
@@ -53,10 +53,10 @@ IF3210 Pengembangan Aplikasi pada Platform Khusus.
 ## Jumlah jam persiapan dan pengerjaan untuk masing-masing anggota.
 
 1. 13520086 - Fawwaz Anugrah WD
-    - Camera
-    - Twibbon
-    - Menu
-    - Implementasi API Retrofit
+    - Camera: 4 jam
+    - Twibbon: 5 jam
+    - Menu: 10 jam
+    - API Retrofit: 2 jam
 2. 13520098 - Andika Naufal Hilmy
     - QR
 3. 13520122 - Alifia Rahmah
