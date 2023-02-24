@@ -5,7 +5,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object BranchClient {
-    private const val BASE_URL : String = BuildConfig.BASE_URL
+    private val BASE_URL : String = BuildConfig.BASE_URL
     private var mRetrofit : Retrofit? = null
 
     fun getInstance(): Retrofit {

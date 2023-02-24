@@ -65,7 +65,10 @@ class BranchFragment : Fragment() {
                     if (branchList != null) {
                         branches.addAll(branchList.data)
                     }
+                    // order by branch name
+                    branches.sortBy { it.name }
                 }
+                adapter!!.notifyDataSetChanged()
             }
 
             override fun onFailure(call: Call<BranchList>, t: Throwable) {
