@@ -40,6 +40,8 @@ class QrActivity : AppCompatActivity() {
      */
     private val REQUIRED_PERMISSIONS = arrayOf(android.Manifest.permission.CAMERA)
     private val CAMERA_REQ_CODE = 69
+    private val FAILED = 1
+    private val SUCCESS = 0
 
     /**
      * Vars
@@ -199,5 +201,18 @@ class QrActivity : AppCompatActivity() {
             }
         }
         )
+    }
+
+    /**
+     * On finish activity
+     */
+    override fun onDestroy() {
+        if (transactionStatus == "SUCCESS") {
+            setResult(SUCCESS)
+        }
+        else {
+            setResult(FAILED)
+        }
+        super.onDestroy()
     }
 }

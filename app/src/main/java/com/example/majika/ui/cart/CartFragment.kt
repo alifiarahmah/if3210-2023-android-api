@@ -1,10 +1,13 @@
 package com.example.majika.ui.cart
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -78,6 +81,13 @@ class CartFragment : Fragment() {
             binding.checkoutButton.visibility = View.GONE
         }
 
+        var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            result ->
+            if (result.resultCode == 0) {
+                Log.d("DEBUG", result.resultCode.toString())
+                TODO("rEPLACE FRAGMENT TO MENU")
+            }
+        }
 
         // if cart is not empty, show checkout button to payment fragment
         binding.checkoutButton.setOnClickListener {
@@ -86,7 +96,8 @@ class CartFragment : Fragment() {
              * QR Code scanner
              */
             val qrIntent = Intent(requireActivity(), QrActivity::class.java)
-            startActivity(qrIntent)
+            // startActivity(qrIntent)
+            resultLauncher.launch(qrIntent)
         }
 
 
@@ -98,4 +109,6 @@ class CartFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+
 }
