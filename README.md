@@ -22,27 +22,27 @@ IF3210 Pengembangan Aplikasi pada Platform Khusus.
 ## Screenshot aplikasi (dimasukkan dalam folder screenshot).
 
 ### Kamera
-![Kamera](screenshot/camera_1.png)
-![Kamera](screenshot/camera_2.png)
+![Kamera](screenshot/camera_1.jpg)
+![Kamera](screenshot/camera_2.jpg)
 
 ### Cabang
-![Cabang](screenshot/branch.png)
+![Cabang](screenshot/branch.jpg)
 
 ### Menu
-![Menu](screenshot/menu_1.png)
-![Menu](screenshot/menu_2.png)
-![Menu](screenshot/menu_3.png)
+![Menu](screenshot/menu_1.jpg)
+![Menu](screenshot/menu_2.jpg)
+![Menu](screenshot/menu_3.jpg)
 
 ### Keranjang
-![Keranjang](screenshot/cart.png)
+![Keranjang](screenshot/cart.jpg)
 
 ## Pembagian kerja anggota kelompok.
 
 1. 13520086 - Fawwaz Anugrah WD
-   - Camera
-   - Twibbon
-   - Menu
-   - Implementasi API Retrofit
+   - Camera: 4 jam
+   - Twibbon: 5 jam
+   - Menu: 10 jam
+   - API Retrofit: 2 jam
 2. 13520098 - Andika Naufal Hilmy
    - QR
 3. 13520122 - Alifia Rahmah
