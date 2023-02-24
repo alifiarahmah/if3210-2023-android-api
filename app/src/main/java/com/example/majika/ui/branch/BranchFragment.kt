@@ -66,7 +66,6 @@ class BranchFragment : Fragment() {
                         branches.addAll(branchList.data)
                     }
                     // order by branch name
-                    branches.sortBy { it.name }
                 }
                 adapter!!.notifyDataSetChanged()
             }
