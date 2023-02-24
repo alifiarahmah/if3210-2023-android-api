@@ -75,7 +75,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="3"
-                    android:text="@string/maps" />
+                    android:backgroundTint="@color/majika_beige"
+                    android:text="@string/maps"
+                    android:textColor="@color/majika_red" />
 
             </LinearLayout>
 
