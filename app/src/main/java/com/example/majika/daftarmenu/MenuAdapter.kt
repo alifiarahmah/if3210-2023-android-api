@@ -105,10 +105,10 @@ class MenuAdapter(private var mContext: Context, public var list:ArrayList<MenuS
                     }
                     // if order is 0, then delete from cart
                     if(order == 0){
-                        cartDao?.delete(Cart(item.name!!, item.price!!, order))
+                        cartDao?.delete(Cart(item.name!!, item.price!!, item.type.toString(), order))
                         Log.d("DELETE", "Deleted ${item.name} from cart")
                     } else {
-                        cartDao?.update(Cart(item.name!!, item.price!!, order))
+                        cartDao?.update(Cart(item.name!!, item.price!!, item.type.toString(), order))
                         Log.d("UPDATE", "Updated ${item.name} from cart")
                     }
                     holder.orderView.text = order.toString()
@@ -124,10 +124,10 @@ class MenuAdapter(private var mContext: Context, public var list:ArrayList<MenuS
                     val order =  Integer.parseInt(holder.orderView.text.toString()) + 1
                     // if order is 1, then add to cart
                     if(order == 1){
-                        cartDao?.insert(Cart(item.name!!, item.price!!, order))
+                        cartDao?.insert(Cart(item.name!!, item.price!!, item.type.toString(), order))
                         Log.d("INSERT", "Inserted ${item.name} to cart")
                     } else {
-                        cartDao?.update(Cart(item.name!!, item.price!!, order))
+                        cartDao?.update(Cart(item.name!!, item.price!!, item.type.toString(), order))
                         Log.d("UPDATE", "Updated ${item.name} from cart")
                     }
                     holder.orderView.text = order.toString()

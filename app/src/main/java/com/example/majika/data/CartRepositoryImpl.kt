@@ -9,7 +9,7 @@ class CartRepositoryImpl(private val dao: CartDao) : CartRepository {
         return dao.getAll()
     }
 
-    override fun getCartByAttr(name: String, type: MenuType, price: Int): Cart {
+    override fun getCartByAttr(name: String, type: MenuType, price: Int): Cart? {
         return dao.getByAttr(name, type.toString(), price)
     }
 

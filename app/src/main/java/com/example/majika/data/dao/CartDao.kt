@@ -12,7 +12,7 @@ interface CartDao {
     fun loadAllByIds(names: IntArray): List<Cart>
 
     @Query("SELECT * FROM cart WHERE name = :name AND type = :type AND price = :price LIMIT 1")
-    fun getByAttr(name: String, type: String, price: Int): Cart
+    fun getByAttr(name: String, type: String, price: Int): Cart?
 
     // get cart item quantity by name
     @Query("SELECT quantity FROM cart WHERE name = :name")
