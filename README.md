@@ -47,7 +47,7 @@ Aplikasi ini dibuat menggunakan Kotlin dan dibuat untuk memenuhi tugas IF3210 Pe
 
 ![QR Code Scanner](screenshot/qrscanner_scanning.jpg)
 ![QR Code Scanner](screenshot/qrscanner_success.jpg)
-![QR Code Scanner](screenshot/qrscanner_failure.jpg)
+![QR Code Scanner](screenshot/qrscanner_failed.jpg)
 ![QR Code Scanner](screenshot/qrscanner_landscape.jpg)
 
 ## Pembagian kerja anggota kelompok
