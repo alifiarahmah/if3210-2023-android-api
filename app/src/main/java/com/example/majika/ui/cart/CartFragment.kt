@@ -1,6 +1,5 @@
 package com.example.majika.ui.cart
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +13,6 @@ import com.example.majika.data.AppDatabase
 import com.example.majika.data.CartRepositoryImpl
 import com.example.majika.data.entity.Cart
 import com.example.majika.databinding.FragmentCartBinding
-import com.example.majika.ui.qr.QrActivity
 import com.example.majika.utils.AppUtil
 
 class CartFragment : Fragment() {
